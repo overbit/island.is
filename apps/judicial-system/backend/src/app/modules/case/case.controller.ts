@@ -63,6 +63,7 @@ const prosecutorUpdateRule = {
     'court',
     'arrestDate',
     'requestedCourtDate',
+    'alternativeTravelBan',
     'requestedCustodyEndDate',
     'lawsBroken',
     'custodyProvisions',
@@ -90,7 +91,7 @@ const judgeUpdateRule = {
     'accusedPlea',
     'litigationPresentations',
     'ruling',
-    'rejecting',
+    'decision',
     'custodyEndDate',
     'custodyRestrictions',
     'accusedAppealDecision',
@@ -112,12 +113,16 @@ const prosecutorTransitionRule = {
   ],
 } as RolesRule
 
-// Allows judges to accept and reject cases
+// Allows judges to receive, accept and reject cases
 const judgeTransitionRule = {
   role: UserRole.JUDGE,
   type: RulesType.FIELD_VALUES,
   dtoField: 'transition',
-  dtoFieldValues: [CaseTransition.ACCEPT, CaseTransition.REJECT],
+  dtoFieldValues: [
+    CaseTransition.RECEIVE,
+    CaseTransition.ACCEPT,
+    CaseTransition.REJECT,
+  ],
 } as RolesRule
 
 @UseGuards(RolesGuard)

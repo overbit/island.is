@@ -10,6 +10,7 @@ import {
   Case,
   CaseAppealDecision,
   CaseCustodyRestrictions,
+  CaseDecision,
   CaseGender,
 } from '@island.is/judicial-system/types'
 import { validate } from './validate'
@@ -41,13 +42,22 @@ export const getAppealDecitionText = (
 }
 
 export const constructConclusion = (workingCase: Case) => {
-  if (workingCase.rejecting) {
+  if (workingCase.decision === CaseDecision.REJECTING) {
     return (
       <Text as="span" variant="intro">
-        Kröfu um gæsluvarðhald er hafnað.
+        Beiðni um gæslu á hendur,
+        <Text
+          as="span"
+          variant="intro"
+          color="blue400"
+          fontWeight="semiBold"
+        >{` ${workingCase.accusedName} kt.${formatNationalId(
+          workingCase.accusedNationalId,
+        )}`}</Text>
+        , er hafnað.
       </Text>
     )
-  } else {
+  } else if (workingCase.decision === CaseDecision.ACCEPTING) {
     return (
       <>
         <Text as="span" variant="intro">{`Kærði, `}</Text>
@@ -140,6 +150,24 @@ export const constructConclusion = (workingCase: Case) => {
         )}
       </>
     )
+  } else {
+    return (
+      <Text as="span" variant="intro">
+        Kærði,
+        <Text
+          as="span"
+          variant="intro"
+          color="blue400"
+          fontWeight="semiBold"
+        >{` ${workingCase.accusedName} kt.${formatNationalId(
+          workingCase.accusedNationalId,
+        )}`}</Text>
+        , skal sæta farbanni, þó ekki lengur en til
+        <Text as="span" variant="intro" color="blue400" fontWeight="semiBold">
+          {` ${formatDate(workingCase.custodyEndDate, 'PPPp')}.`}
+        </Text>
+      </Text>
+    )
   }
 }
 
@@ -148,11 +176,12 @@ export const constructProsecutorDemands = (workingCase: Case) => {
     <Text>
       Þess er krafist að
       <Text as="span" fontWeight="semiBold">
-        {` ${workingCase.accusedName}, kt. 
-        ${formatNationalId(workingCase.accusedNationalId)} `}
+        {` ${workingCase.accusedName}, kt.
+        ${formatNationalId(workingCase.accusedNationalId)}`}
       </Text>
-      , verði með úrskurði Héraðsdóms Reykjavíkur gert að sæta gæsluvarðhaldi
-      til
+      {`, verði með úrskurði Héraðsdóms Reykjavíkur gert að sæta gæsluvarðhaldi${
+        workingCase.alternativeTravelBan ? ', farbanni til vara,' : ''
+      } til`}
       <Text as="span" fontWeight="semiBold">
         {` ${formatDate(workingCase.requestedCustodyEndDate, 'EEEE')?.replace(
           'dagur',

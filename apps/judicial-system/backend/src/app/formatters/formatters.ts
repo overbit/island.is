@@ -8,6 +8,7 @@ import {
   CaseAppealDecision,
   CaseCustodyProvisions,
   CaseCustodyRestrictions,
+  CaseDecision,
   CaseGender,
 } from '@island.is/judicial-system/types'
 
@@ -15,6 +16,7 @@ export function formatProsecutorDemands(
   accusedNationalId: string,
   accusedName: string,
   court: string,
+  alternativeTravelBan: boolean,
   requestedCustodyEndDate: Date,
   isolation: boolean,
 ): string {
@@ -23,10 +25,9 @@ export function formatProsecutorDemands(
   )} verði með úrskurði ${court?.replace(
     'Héraðsdómur',
     'Héraðsdóms',
-  )} gert að sæta gæsluvarðhaldi til ${formatDate(
-    requestedCustodyEndDate,
-    'PPPPp',
-  )
+  )} gert að sæta gæsluvarðhaldi${
+    alternativeTravelBan ? ', farbanni til vara,' : ''
+  } til ${formatDate(requestedCustodyEndDate, 'PPPPp')
     ?.replace('dagur,', 'dagsins')
     ?.replace(' kl.', ', kl.')}${
     isolation
@@ -35,11 +36,42 @@ export function formatProsecutorDemands(
   }.`
 }
 
+function custodyProvisionsOrder(p: CaseCustodyProvisions) {
+  switch (p) {
+    case CaseCustodyProvisions._95_1_A:
+      return 0
+    case CaseCustodyProvisions._95_1_B:
+      return 1
+    case CaseCustodyProvisions._95_1_C:
+      return 2
+    case CaseCustodyProvisions._95_1_D:
+      return 3
+    case CaseCustodyProvisions._95_2:
+      return 4
+    case CaseCustodyProvisions._99_1_B:
+      return 5
+    case CaseCustodyProvisions._100_1:
+      return 6
+    default:
+      return 999
+  }
+}
+
+function custodyProvisionsCompare(
+  p1: CaseCustodyProvisions,
+  p2: CaseCustodyProvisions,
+) {
+  const o1 = custodyProvisionsOrder(p1)
+  const o2 = custodyProvisionsOrder(p2)
+
+  return o1 < o2 ? -1 : o1 > o2 ? 1 : 0
+}
+
 export function formatCustodyProvisions(
   custodyProvisions: CaseCustodyProvisions[],
 ): string {
   return custodyProvisions
-    ?.sort()
+    ?.sort((p1, p2) => custodyProvisionsCompare(p1, p2))
     .reduce((s, l) => `${s}${laws[l]}\n`, '')
     .slice(0, -1)
 }
@@ -57,19 +89,21 @@ export function formatCourtCaseNumber(
 export function formatConclusion(
   accusedNationalId: string,
   accusedName: string,
-  rejecting: boolean,
+  decision: CaseDecision,
   custodyEndDate: Date,
   isolation: boolean,
 ): string {
-  return rejecting
+  return decision === CaseDecision.REJECTING
     ? 'Kröfu um gæsluvarðhald er hafnað.'
     : `Kærði, ${accusedName}, kt. ${formatNationalId(
         accusedNationalId,
-      )} skal sæta gæsluvarðhaldi, þó ekki lengur en til ${formatDate(
-        custodyEndDate,
-        'PPPPp',
-      )?.replace('dagur,', 'dagsins')}.${
-        isolation
+      )}, skal sæta ${
+        decision === CaseDecision.ACCEPTING ? 'gæsluvarðhaldi' : 'farbanni'
+      }, þó ekki lengur en til ${formatDate(custodyEndDate, 'PPPPp')?.replace(
+        'dagur,',
+        'dagsins',
+      )}.${
+        decision === CaseDecision.ACCEPTING && isolation
           ? ' Kærði skal sæta einangrun meðan á gæsluvarðhaldi stendur.'
           : ''
       }`
@@ -158,7 +192,7 @@ export function formatPrisonCourtDateEmailNotification(
   isolation: boolean,
   defenderName: string,
 ): string {
-  const courtText = court.replace('dómur', 'dóms')
+  const courtText = court?.replace('dómur', 'dóms')
   const courtDateText = formatDate(courtDate, 'PPPp')
   const requestedCustodyEndDateText = formatDate(
     requestedCustodyEndDate,
@@ -212,7 +246,7 @@ export function formatPrisonRulingEmailNotification(
   prosecutorName: string,
   courtDate: Date,
   defenderName: string,
-  rejecting: boolean,
+  decision: CaseDecision,
   custodyEndDate: Date,
   custodyRestrictions: CaseCustodyRestrictions[],
   accusedAppealDecision: CaseAppealDecision,
@@ -226,20 +260,20 @@ export function formatPrisonRulingEmailNotification(
   )}.<br /><br />Ákærandi: ${prosecutorName}<br />Verjandi: ${defenderName}<br /><br /><strong>Úrskurðarorð</strong><br /><br />${formatConclusion(
     accusedNationalId,
     accusedName,
-    rejecting,
+    decision,
     custodyEndDate,
     custodyRestrictions.includes(CaseCustodyRestrictions.ISOLATION),
   )}<br /><br /><strong>Ákvörðun um kæru</strong><br />${formatAppeal(
     accusedAppealDecision,
     'Kærði',
     false,
-  )}<br />${formatAppeal(
-    prosecutorAppealDecision,
-    'Sækjandi',
-    false,
-  )}<br /><br /><strong>Tilhögun gæsluvarðhalds</strong><br />${formatRestrictions(
-    custodyRestrictions,
-  )}<br /><br />${judgeName} ${judgeTitle}`
+  )}<br />${formatAppeal(prosecutorAppealDecision, 'Sækjandi', false)}${
+    decision === CaseDecision.ACCEPTING
+      ? `<br /><br /><strong>Tilhögun gæsluvarðhalds</strong><br />${formatRestrictions(
+          custodyRestrictions,
+        )}`
+      : ''
+  }<br /><br />${judgeName} ${judgeTitle}`
 }
 
 export function stripHtmlTags(html: string): string {

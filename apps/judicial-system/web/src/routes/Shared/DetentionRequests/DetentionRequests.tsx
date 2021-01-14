@@ -19,6 +19,7 @@ import {
 import Loading from '../../../shared-components/Loading/Loading'
 import {
   Case,
+  CaseDecision,
   CaseState,
   CaseTransition,
 } from '@island.is/judicial-system/types'
@@ -106,6 +107,7 @@ export const DetentionRequests: React.FC = () => {
 
   const mapCaseStateToTagVariant = (
     state: CaseState,
+    decision?: CaseDecision,
     isCustodyEndDateInThePast?: boolean,
   ): { color: TagVariant; text: string } => {
     switch (state) {
@@ -113,15 +115,29 @@ export const DetentionRequests: React.FC = () => {
       case CaseState.DRAFT:
         return { color: 'red', text: 'Drög' }
       case CaseState.SUBMITTED:
-        return { color: 'purple', text: 'Krafa staðfest' }
+        return { color: 'purple', text: 'Krafa send' }
+      case CaseState.RECEIVED:
+        return { color: 'darkerMint', text: 'Krafa móttekin' }
       case CaseState.ACCEPTED:
         if (isCustodyEndDateInThePast) {
-          return { color: 'darkerBlue', text: 'Gæsluvarðhaldi lokið' }
+          return {
+            color: 'darkerBlue',
+            text:
+              decision === CaseDecision.ACCEPTING_ALTERNATIVE_TRAVEL_BAN
+                ? 'Farbanni lokið'
+                : 'Gæsluvarðhaldi lokið',
+          }
         } else {
-          return { color: 'darkerMint', text: 'Gæsluvarðhald virkt' }
+          return {
+            color: 'blue',
+            text:
+              decision === CaseDecision.ACCEPTING_ALTERNATIVE_TRAVEL_BAN
+                ? 'Farbann virkt'
+                : 'Gæsluvarðhald virkt',
+          }
         }
       case CaseState.REJECTED:
-        return { color: 'blue', text: 'Gæsluvarðhaldi hafnað' }
+        return { color: 'rose', text: 'Kröfu hafnað' }
       default:
         return { color: 'white', text: 'Óþekkt' }
     }
@@ -132,8 +148,8 @@ export const DetentionRequests: React.FC = () => {
       history.push(`${Constants.SIGNED_VERDICT_OVERVIEW}/${c.id}`)
     } else if (isJudge) {
       history.push(`${Constants.JUDGE_SINGLE_REQUEST_BASE_ROUTE}/${c.id}`)
-    } else if (c.isCourtDateInThePast) {
-      history.push(`${Constants.STEP_THREE_ROUTE}/${c.id}`)
+    } else if (c.state === CaseState.RECEIVED && c.isCourtDateInThePast) {
+      history.push(`${Constants.STEP_FIVE_ROUTE}/${c.id}`)
     } else {
       history.push(`${Constants.SINGLE_REQUEST_BASE_ROUTE}/${c.id}`)
     }
@@ -272,9 +288,9 @@ export const DetentionRequests: React.FC = () => {
                       Krafa stofnuð
                       <Box
                         className={cn(styles.sortIcon, {
-                          [styles.sortAccusedNameAsc]:
+                          [styles.sortCreatedAsc]:
                             getClassNamesFor('created') === 'ascending',
-                          [styles.sortAccusedNameDes]:
+                          [styles.sortCreatedDes]:
                             getClassNamesFor('created') === 'descending',
                         })}
                         marginLeft={1}
@@ -282,7 +298,7 @@ export const DetentionRequests: React.FC = () => {
                         display="flex"
                         alignItems="center"
                       >
-                        <Icon icon="caretDown" size="small" />
+                        <Icon icon="caretUp" size="small" />
                       </Box>
                     </Box>
                   </Text>
@@ -294,7 +310,7 @@ export const DetentionRequests: React.FC = () => {
                 </th>
                 <th className={styles.th}>
                   <Text as="span" fontWeight="regular">
-                    Gæsla rennur út
+                    Gildir til
                   </Text>
                 </th>
                 <th></th>
@@ -347,6 +363,7 @@ export const DetentionRequests: React.FC = () => {
                       variant={
                         mapCaseStateToTagVariant(
                           c.state,
+                          c.decision,
                           c.isCustodyEndDateInThePast,
                         ).color
                       }
@@ -355,6 +372,7 @@ export const DetentionRequests: React.FC = () => {
                       {
                         mapCaseStateToTagVariant(
                           c.state,
+                          c.decision,
                           c.isCustodyEndDateInThePast,
                         ).text
                       }

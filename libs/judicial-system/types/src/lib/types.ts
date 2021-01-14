@@ -22,6 +22,7 @@ export enum CaseState {
   NEW = 'NEW',
   DRAFT = 'DRAFT',
   SUBMITTED = 'SUBMITTED',
+  RECEIVED = 'RECEIVED',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
   DELETED = 'DELETED',
@@ -30,6 +31,7 @@ export enum CaseState {
 export enum CaseTransition {
   OPEN = 'OPEN',
   SUBMIT = 'SUBMIT',
+  RECEIVE = 'RECEIVE',
   ACCEPT = 'ACCEPT',
   REJECT = 'REJECT',
   DELETE = 'DELETE',
@@ -42,6 +44,7 @@ export enum CaseCustodyProvisions {
   _95_1_D = '_95_1_D', // d-lið 1. mgr. 95. gr.
   _95_2 = '_95_2', // 2. mgr. 95. gr.
   _99_1_B = '_99_1_B', // b-lið 1. mgr. 99. gr.
+  _100_1 = '_100_1', // 1. mgr. 100. gr. sml.
 }
 
 export enum CaseCustodyRestrictions {
@@ -63,6 +66,12 @@ export enum CaseGender {
   OTHER = 'OTHER',
 }
 
+export enum CaseDecision {
+  ACCEPTING = 'ACCEPTING',
+  REJECTING = 'REJECTING',
+  ACCEPTING_ALTERNATIVE_TRAVEL_BAN = 'ACCEPTING_ALTERNATIVE_TRAVEL_BAN',
+}
+
 export type Gender = 'karl' | 'kona' | 'annað'
 
 export interface Case {
@@ -80,6 +89,7 @@ export interface Case {
   court?: string
   arrestDate?: string
   requestedCourtDate?: string
+  alternativeTravelBan?: boolean
   requestedCustodyEndDate?: string
   lawsBroken?: string
   custodyProvisions?: CaseCustodyProvisions[]
@@ -103,7 +113,7 @@ export interface Case {
   accusedPlea?: string
   litigationPresentations?: string
   ruling?: string
-  rejecting?: boolean
+  decision?: CaseDecision
   custodyEndDate?: string
   isCustodyEndDateInThePast?: boolean
   custodyRestrictions?: CaseCustodyRestrictions[]
@@ -153,6 +163,7 @@ export interface UpdateCase {
   court?: string
   arrestDate?: string
   requestedCourtDate?: string
+  alternativeTravelBan?: boolean
   requestedCustodyEndDate?: string
   lawsBroken?: string
   custodyProvisions?: CaseCustodyProvisions[]
@@ -172,7 +183,7 @@ export interface UpdateCase {
   accusedPlea?: string
   litigationPresentations?: string
   ruling?: string
-  rejecting?: boolean
+  decision?: CaseDecision
   custodyEndDate?: string
   custodyRestrictions?: CaseCustodyRestrictions[]
   accusedAppealDecision?: CaseAppealDecision

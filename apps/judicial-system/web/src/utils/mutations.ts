@@ -36,6 +36,7 @@ export const CreateCaseMutation = gql`
       court
       arrestDate
       requestedCourtDate
+      alternativeTravelBan
       requestedCustodyEndDate
       lawsBroken
       custodyProvisions
@@ -62,7 +63,7 @@ export const CreateCaseMutation = gql`
       accusedPlea
       litigationPresentations
       ruling
-      rejecting
+      decision
       custodyEndDate
       isCustodyEndDateInThePast
       custodyRestrictions
@@ -89,6 +90,7 @@ export const CasesQuery = gql`
       accusedName
       isCourtDateInThePast
       custodyEndDate
+      decision
       isCustodyEndDateInThePast
     }
   }
