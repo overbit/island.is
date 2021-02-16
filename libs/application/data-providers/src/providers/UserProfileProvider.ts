@@ -4,11 +4,18 @@ import {
   SuccessfulDataProviderResult,
 } from '@island.is/application/core'
 
+export interface UserProfileData {
+  email: string
+  emailVerified?: boolean
+  mobilePhoneNumber: string
+  mobilePhoneNumberVerified?: boolean
+}
+
 /** This data provider fetches email and phone number information from user profile service and resolves even though the user has not set it up in my pages **/
 export class UserProfileProvider extends BasicDataProvider {
   readonly type = 'UserProfile'
 
-  async provide(): Promise<unknown> {
+  async provide(): Promise<UserProfileData> {
     const query = `query GetUserProfile {
       getUserProfile {
         email
@@ -55,7 +62,9 @@ export class UserProfileProvider extends BasicDataProvider {
       data: result,
     }
   }
-  onProvideSuccess(result: object): SuccessfulDataProviderResult {
+  onProvideSuccess(
+    result: UserProfileData,
+  ): SuccessfulDataProviderResult<UserProfileData> {
     return { date: new Date(), status: 'success', data: result }
   }
 }

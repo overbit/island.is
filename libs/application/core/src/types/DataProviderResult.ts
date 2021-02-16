@@ -1,5 +1,7 @@
-export interface DataProviderResult {
-  data?: object | string | boolean | number
+export type DataProviderType = object | string | boolean | number
+
+export interface DataProviderResult<Data = DataProviderType> {
+  data?: Data
   date: Date
   reason?: string
   status: 'failure' | 'success'
@@ -11,6 +13,6 @@ export interface FailedDataProviderResult extends DataProviderResult {
   status: 'failure'
 }
 
-export interface SuccessfulDataProviderResult extends DataProviderResult {
+export interface SuccessfulDataProviderResult<Data = DataProviderType> extends DataProviderResult<Data> {
   status: 'success'
 }

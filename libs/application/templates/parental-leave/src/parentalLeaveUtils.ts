@@ -11,6 +11,7 @@ import { Period } from './types'
 import { ParentalLeave, PregnancyStatus } from './dataProviders/APIDataTypes'
 import { daysInMonth, defaultMonths } from './config'
 import { YES } from './constants'
+import { ParentalLeaveApplication } from './lib/dataSchema';
 
 export function getExpectedDateOfBirth(
   application: Application,
@@ -52,7 +53,7 @@ export function getNameAndIdOfSpouse(
   return [spouse.fullName, spouse.nationalId]
 }
 
-export function getEstimatedMonthlyPay(application: Application): number {
+export function getEstimatedMonthlyPay(application: ParentalLeaveApplication): number {
   // TODO read this value from external data when APIs have arrived
   return 384000
 }

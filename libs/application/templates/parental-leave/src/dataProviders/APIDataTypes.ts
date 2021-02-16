@@ -60,3 +60,8 @@ export type ParentalLeave = {
   employers: Employer[]
   status: string // this should probably be an enum...
 }
+
+export interface PregnancyStatusData {
+  hasActivePregnancy: boolean
+  pregnancyDueDate: string
+}

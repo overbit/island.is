@@ -24,6 +24,7 @@ import { NO, YES } from '../constants'
 
 import Logo from '../assets/Logo'
 import { defaultMonths } from '../config'
+import { ParentalLeaveApplication } from '../lib/dataSchema'
 
 interface SelectItem {
   id: string
@@ -92,18 +93,15 @@ export const ParentalLeaveForm: Form = buildForm({
                   title: mm.applicant.email,
                   id: 'applicant.email',
                   variant: 'email',
-                  defaultValue: (application: Application) =>
-                    (application.externalData.userProfile?.data as {
-                      email?: string
-                    })?.email,
+                  defaultValue: (application: ParentalLeaveApplication) =>
+                    application.externalData.userProfile?.data?.email,
                 }),
                 buildTextField({
                   width: 'half',
                   title: mm.applicant.phoneNumber,
-                  defaultValue: (application: Application) =>
-                    (application.externalData.userProfile?.data as {
-                      mobilePhoneNumber?: string
-                    })?.mobilePhoneNumber,
+                  defaultValue: (application: ParentalLeaveApplication) =>
+                    application.externalData.userProfile?.data
+                      ?.mobilePhoneNumber,
                   id: 'applicant.phoneNumber',
                   variant: 'tel',
                   format: '###-####',
@@ -474,7 +472,7 @@ export const ParentalLeaveForm: Form = buildForm({
             buildMultiField({
               id: 'reviewRights',
               title: m.rightsSummaryName,
-              description: (application) =>
+              description: (application: ParentalLeaveApplication) =>
                 `${formatIsk(
                   getEstimatedMonthlyPay(application),
                 )} er áætluð mánaðarleg útborgun þín fyrir hvern heilan mánuð eftir skatt.`, // TODO messages

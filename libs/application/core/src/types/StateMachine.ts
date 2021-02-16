@@ -35,8 +35,10 @@ export interface RoleInState<T extends EventObject = AnyEventObject> {
   actions?: CallToAction<T>[]
 }
 
-export interface ApplicationContext {
-  application: Application
+export interface ApplicationContext<
+  ApplicationType extends Application<any, any> = Application
+> {
+  application: ApplicationType
 }
 
 export type CallToAction<T extends EventObject = AnyEventObject> = {

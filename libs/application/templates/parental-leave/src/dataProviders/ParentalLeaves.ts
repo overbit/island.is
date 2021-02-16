@@ -35,7 +35,7 @@ export class ParentalLeaves extends BasicDataProvider {
     // return fetch(`users/${applicant}/parentalLeaves`)
     return Promise.resolve({ applicant })
   }
-  onProvideSuccess(applicant: string): SuccessfulDataProviderResult {
+  onProvideSuccess(applicant: string): SuccessfulDataProviderResult<ParentalLeave[]> {
     return {
       date: new Date(),
       data: [buildOldParentalLeave(applicant)],

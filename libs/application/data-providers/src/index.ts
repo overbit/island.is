@@ -1,4 +1,4 @@
-export { ExampleFails } from './providers/ExampleFails'
-export { ExampleSucceeds } from './providers/ExampleSucceeds'
-export { NationalRegistryProvider } from './providers/NationalRegistryProvider'
-export { UserProfileProvider } from './providers/UserProfileProvider'
+export * from './providers/ExampleFails'
+export * from './providers/ExampleSucceeds'
+export * from './providers/NationalRegistryProvider'
+export * from './providers/UserProfileProvider'

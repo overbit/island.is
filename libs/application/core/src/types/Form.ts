@@ -9,7 +9,7 @@ export type StaticText = (MessageDescriptor & { values?: object }) | string
 
 export type FormText =
   | StaticText
-  | ((application: Application) => StaticText | null | undefined)
+  | ((application: Application<any, any>) => StaticText | null | undefined)
 export type FormTextArray =
   | StaticText[]
   | ((application: Application) => (StaticText | null | undefined)[])

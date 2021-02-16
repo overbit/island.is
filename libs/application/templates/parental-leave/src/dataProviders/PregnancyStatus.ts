@@ -3,6 +3,7 @@ import {
   Application,
   SuccessfulDataProviderResult,
 } from '@island.is/application/core'
+import { PregnancyStatusData } from './APIDataTypes';
 
 export class PregnancyStatus extends BasicDataProvider {
   type = 'PregnancyStatus'
@@ -12,7 +13,7 @@ export class PregnancyStatus extends BasicDataProvider {
     // return fetch(`users/${applicant}/pregnancyStatus`)
     return Promise.resolve({})
   }
-  onProvideSuccess(): SuccessfulDataProviderResult {
+  onProvideSuccess(): SuccessfulDataProviderResult<PregnancyStatusData> {
     return {
       date: new Date(),
       data: {

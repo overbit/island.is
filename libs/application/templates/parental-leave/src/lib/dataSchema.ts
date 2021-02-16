@@ -2,6 +2,12 @@ import * as z from 'zod'
 import * as kennitala from 'kennitala'
 import { NO, YES } from '../constants'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { Application, DataProviderResult } from '@island.is/application/core'
+import {
+  ParentalLeave,
+  PregnancyStatusData,
+} from '../dataProviders/APIDataTypes'
+import { UserProfileData } from '@island.is/application/data-providers'
 
 /**
  * TODO: zod has a way to overwrite the default errors messages e.g. "Field is required" etc..
@@ -68,3 +74,14 @@ export const dataSchema = z.object({
   usePersonalAllowanceFromSpouse: z.enum([YES, NO]),
 })
 export type SchemaFormValues = z.infer<typeof dataSchema>
+
+interface ExternalData {
+  parentalLeaves?: DataProviderResult<ParentalLeave[]>
+  pregnancyStatus?: DataProviderResult<PregnancyStatusData>
+  userProfile?: DataProviderResult<UserProfileData>
+}
+
+export type ParentalLeaveApplication = Application<
+  SchemaFormValues,
+  ExternalData
+>

@@ -10,7 +10,7 @@ import {
   DefaultEvents,
 } from '@island.is/application/core'
 
-import { dataSchema, SchemaFormValues } from './dataSchema'
+import { dataSchema, ParentalLeaveApplication, SchemaFormValues } from './dataSchema';
 import { answerValidators } from './answerValidators'
 import { YES, NO, API_MODULE_ACTIONS } from '../constants'
 
@@ -40,19 +40,12 @@ enum States {
   APPROVED = 'approved',
 }
 
-function hasEmployer(context: ApplicationContext) {
-  const currentApplicationAnswers = context.application.answers as {
-    employer: { isSelfEmployed: typeof YES | typeof NO }
-  }
-
-  return currentApplicationAnswers.employer.isSelfEmployed === NO
+function hasEmployer(context: ApplicationContext<ParentalLeaveApplication>) {
+  return context.application.answers.employer.isSelfEmployed === NO
 }
 
-function needsOtherParentApproval(context: ApplicationContext) {
-  const currentApplicationAnswers = context.application
-    .answers as SchemaFormValues
-
-  return currentApplicationAnswers.requestRights.isRequestingRights === YES
+function needsOtherParentApproval(context: ApplicationContext<ParentalLeaveApplication>) {
+  return context.application.answers.requestRights.isRequestingRights === YES
 }
 
 const ParentalLeaveTemplate: ApplicationTemplate<
@@ -369,7 +362,7 @@ const ParentalLeaveTemplate: ApplicationTemplate<
   },
   mapUserToRole(
     id: string,
-    application: Application,
+    application: ParentalLeaveApplication,
   ): ApplicationRole | undefined {
     if (id === application.applicant) {
       return Roles.APPLICANT
