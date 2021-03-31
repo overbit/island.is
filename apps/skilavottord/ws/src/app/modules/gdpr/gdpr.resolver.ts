@@ -24,7 +24,17 @@ export class GdprResolver {
 
   @Query(() => GdprModel)
   async skilavottordGdpr(@Args('nationalId') nid: string): Promise<GdprModel> {
-    return await this.gdprService.findByNationalId(nid)
+    try {
+      let gdpr = await this.gdprService.findByNationalId(nid)
+      if (gdpr) {
+        return gdpr
+      } else {
+        console.info('gdpr for nationalid:' + nid + ' not found')
+        throw new Error('gdpr for nationalid:' + nid + ' not found')
+      }
+    } catch (error) {
+      throw new Error(error.message)
+    }
   }
 
   @Query(() => [GdprModel])
