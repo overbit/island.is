@@ -3,6 +3,7 @@ import {
   ApplicationStatus,
   ApplicationTemplateHelper,
   ApplicationTypes,
+  DefaultEvents,
 } from '@island.is/application/core'
 import { CRCApplication, Answers, ExternalData } from '../types'
 import ChildrenResidenceChangeTemplate from './ChildrenResidenceChangeTemplate'
@@ -79,7 +80,7 @@ describe('Children Residence Change Template', () => {
         ChildrenResidenceChangeTemplate,
       )
       const [hasChanged, newState, newApplication] = helper.changeState({
-        type: DefaultEvents.SUBMIT,
+        type: DefaultEvents.ASSIGN,
       })
       expect(hasChanged).toBe(true)
       expect(newState).toBe('otherParentApproval')
