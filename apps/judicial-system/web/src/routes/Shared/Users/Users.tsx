@@ -57,7 +57,7 @@ export const Users: React.FC = () => {
             },
             {
               title: 'Stofnun',
-              onClick: () => alert('Ekki útfært'),
+              href: Constants.NEW_INSTITUTION_ROUTE,
             },
           ]}
           title="Bæta við"

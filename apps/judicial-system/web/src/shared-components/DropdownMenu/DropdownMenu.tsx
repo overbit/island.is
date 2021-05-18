@@ -16,7 +16,6 @@ export interface DropdownMenuProps {
   menuLabel?: string
   items: {
     href?: string
-    onClick?: () => void
     title: string
   }[]
   /**
@@ -85,9 +84,6 @@ export const DropdownMenu = ({
               key={index}
               onClick={() => {
                 menu.hide()
-                if (item.onClick) {
-                  item.onClick()
-                }
               }}
               className={
                 menuItemBoxStyle +
