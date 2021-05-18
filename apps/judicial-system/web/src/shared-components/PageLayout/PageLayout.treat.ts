@@ -6,6 +6,9 @@ export const processContainer = style({
 })
 
 export const processContent = style({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
   minHeight: '644px',
   paddingTop: theme.spacing[10],
   paddingBottom: theme.spacing[5],

@@ -263,6 +263,15 @@ export const UpdateUserMutation = gql`
   }
 `
 
+export const CreateInstitutionMutation = gql`
+  mutation CreateInstitutionMutation($input: CreateInstitutionInput!) {
+    createInstitution(input: $input) {
+      id
+      name
+    }
+  }
+`
+
 export const InstitutionsQuery = gql`
   query InstitutionsQuery {
     institutions {
