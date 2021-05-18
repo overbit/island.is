@@ -1,5 +1,5 @@
 import { Inject, UseGuards } from '@nestjs/common'
-import { Context, Query, Resolver } from '@nestjs/graphql'
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 
 import { Logger, LOGGER_PROVIDER } from '@island.is/logging'
 import {
@@ -13,6 +13,7 @@ import {
 import { User } from '@island.is/judicial-system/types'
 
 import { BackendAPI } from '../../../services'
+import { CreateInstitutionInput, UpdateInstitutionInput } from './dto'
 import { Institution } from './institution.model'
 
 @UseGuards(JwtGraphQlAuthGuard)
@@ -37,6 +38,42 @@ export class InstitutionResolver {
       backendApi.getInstitutions(),
       (institutions: Institution[]) =>
         institutions.map((institution) => institution.id),
+    )
+  }
+
+  @Mutation(() => Institution, { nullable: true })
+  createCase(
+    @Args('input', { type: () => CreateInstitutionInput })
+    input: CreateInstitutionInput,
+    @CurrentGraphQlUser() user: User,
+    @Context('dataSources') { backendApi }: { backendApi: BackendAPI },
+  ): Promise<Institution> {
+    this.logger.debug('Creating a new institution')
+
+    return this.auditTrailService.audit(
+      user.id,
+      AuditedAction.CREATE_INSTITUTION,
+      backendApi.createInstitution(input),
+      (institution) => institution.id,
+    )
+  }
+
+  @Mutation(() => Institution, { nullable: true })
+  updateCase(
+    @Args('input', { type: () => UpdateInstitutionInput })
+    input: UpdateInstitutionInput,
+    @CurrentGraphQlUser() user: User,
+    @Context('dataSources') { backendApi }: { backendApi: BackendAPI },
+  ): Promise<Institution> {
+    const { id, ...updateInstitution } = input
+
+    this.logger.debug(`Updating institution ${id}`)
+
+    return this.auditTrailService.audit(
+      user.id,
+      AuditedAction.UPDATE_INSTITUTION,
+      backendApi.updateInstitution(id, updateInstitution),
+      id,
     )
   }
 }

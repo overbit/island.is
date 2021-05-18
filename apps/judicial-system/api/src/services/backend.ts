@@ -22,6 +22,8 @@ import {
   UpdateCase,
   UpdateUser,
   User,
+  CreateInstitution,
+  UpdateInstitution,
 } from '@island.is/judicial-system/types'
 
 import { environment } from '../environments'
@@ -37,6 +39,19 @@ class BackendAPI extends RESTDataSource {
 
   getInstitutions(): Promise<Institution[]> {
     return this.get('institutions')
+  }
+
+  createInstitution(
+    createInstitution: CreateInstitution,
+  ): Promise<Institution> {
+    return this.post('institution', createInstitution)
+  }
+
+  updateInstitution(
+    id: string,
+    updateInstitution: UpdateInstitution,
+  ): Promise<Institution> {
+    return this.put(`institution/${id}`, updateInstitution)
   }
 
   getUsers(): Promise<User[]> {

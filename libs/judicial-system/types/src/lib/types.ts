@@ -16,6 +16,14 @@ export interface Institution {
   name: string
 }
 
+export interface CreateInstitution {
+  name: string
+}
+
+export interface UpdateInstitution {
+  name?: string
+}
+
 export interface User {
   id: string
   created: string

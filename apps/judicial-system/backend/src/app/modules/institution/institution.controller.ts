@@ -1,5 +1,14 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common'
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
 import {
   JwtAuthGuard,
@@ -9,6 +18,7 @@ import {
 } from '@island.is/judicial-system/auth'
 import { UserRole } from '@island.is/judicial-system/types'
 
+import { CreateInstitutionDto, UpdateInstitutionDto } from './dto'
 import { InstitutionService } from './institution.service'
 import { Institution } from './institution.model'
 
@@ -19,6 +29,43 @@ const adminRule = UserRole.ADMIN as RolesRule
 @ApiTags('institutions')
 export class InstitutionController {
   constructor(private readonly institutionService: InstitutionService) {}
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @RolesRules(adminRule)
+  @Post('institutions')
+  @ApiCreatedResponse({
+    type: Institution,
+    description: 'Creates a new institution',
+  })
+  create(
+    @Body()
+    institutionToCreate: CreateInstitutionDto,
+  ): Promise<Institution> {
+    return this.institutionService.create(institutionToCreate)
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @RolesRules(adminRule)
+  @Put('institutions/:id')
+  @ApiOkResponse({
+    type: Institution,
+    description: 'Updates an existing institution',
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() institutionToUpdate: UpdateInstitutionDto,
+  ): Promise<Institution> {
+    const {
+      numberOfAffectedRows,
+      updatedInstitution,
+    } = await this.institutionService.update(id, institutionToUpdate)
+
+    if (numberOfAffectedRows === 0) {
+      throw new NotFoundException(`Institution ${id} does not exist`)
+    }
+
+    return updatedInstitution
+  }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @RolesRules(adminRule)
