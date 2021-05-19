@@ -1,4 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { UniqueConstraintError } from 'sequelize'
+
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 
 import { Logger, LOGGER_PROVIDER } from '@island.is/logging'
@@ -23,10 +25,16 @@ export class InstitutionService {
     })
   }
 
-  create(userToCreate: CreateInstitutionDto): Promise<Institution> {
+  async create(userToCreate: CreateInstitutionDto): Promise<Institution> {
     this.logger.debug('Creating a new institution')
 
-    return this.institutionModel.create(userToCreate)
+    try {
+      return await this.institutionModel.create(userToCreate)
+    } catch (error) {
+      if (error instanceof UniqueConstraintError) {
+        throw new ForbiddenException('Institution already exists')
+      }
+    }
   }
 
   async update(
