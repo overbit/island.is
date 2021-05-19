@@ -10,15 +10,18 @@ import { validate } from '@island.is/judicial-system-web/src/utils/validate'
 import { FormSettings } from '@island.is/judicial-system-web/src/utils/useFormHelper'
 
 interface Props {
-  onSave: (institution?: Institution) => void
+  onSave: (institution: Institution) => Promise<void>
 }
 
 const NewInstitutionForm: React.FC<Props> = (props) => {
   const { onSave } = props
-  const [name, setName] = useState<string>('')
   const [nameErrorMessage, setNameErrorMessage] = useState<string>()
-  const [institution, setInstitution] = useState<Institution>()
-  const validateName = validate(name, 'empty')
+  const [institution, setInstitution] = useState<Institution>({
+    id: '',
+    created: '',
+    modified: '',
+    name: '',
+  })
 
   const validations: FormSettings = {
     name: {
@@ -26,6 +29,24 @@ const NewInstitutionForm: React.FC<Props> = (props) => {
       errorMessage: nameErrorMessage,
       setErrorMessage: setNameErrorMessage,
     },
+  }
+
+  const storeAndRemoveErrorIfValid = (field: string, value: string) => {
+    setInstitution({
+      ...institution,
+      [field]: value,
+    })
+
+    const fieldValidation = validations[field]
+
+    if (
+      !fieldValidation.validations?.some(
+        (v) => validate(value, v).isValid === false,
+      ) &&
+      fieldValidation.setErrorMessage
+    ) {
+      fieldValidation.setErrorMessage(undefined)
+    }
   }
 
   const validateAndSetError = (field: string, value: string) => {
@@ -53,7 +74,9 @@ const NewInstitutionForm: React.FC<Props> = (props) => {
             name="institutionName"
             label="Nafn stofnunar"
             placeholder="Nafn stofnunar"
-            onChange={(evt) => setName(evt.target.value)}
+            onChange={(evt) =>
+              storeAndRemoveErrorIfValid('name', evt.target.value)
+            }
             onBlur={(evt) => validateAndSetError('name', evt.target.value)}
             hasError={nameErrorMessage !== undefined}
             errorMessage={nameErrorMessage}
@@ -64,7 +87,7 @@ const NewInstitutionForm: React.FC<Props> = (props) => {
       <FormContentContainer isFooter>
         <FormFooter
           onNextButtonClick={() => onSave(institution)}
-          nextIsDisabled={!validateName.isValid}
+          nextIsDisabled={nameErrorMessage !== undefined}
           nextIsLoading={false}
           nextButtonText="Vista"
           previousUrl={constants.USER_LIST_ROUTE}
