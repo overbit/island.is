@@ -15,8 +15,8 @@ import {
 } from '@island.is/judicial-system-web/src/shared-components'
 import { Institution, User, UserRole } from '@island.is/judicial-system/types'
 import { FormSettings } from '@island.is/judicial-system-web/src/utils/useFormHelper'
-import { ReactSelectOption } from '../../../types'
-import { validate } from '../../../utils/validate'
+import { ReactSelectOption } from '../../../../types'
+import { validate } from '../../../../utils/validate'
 import * as styles from './UserForm.treat'
 import * as constants from '@island.is/judicial-system-web/src/utils/constants'
 
