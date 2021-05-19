@@ -32,7 +32,7 @@ export class InstitutionController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @RolesRules(adminRule)
-  @Post('institutions')
+  @Post('institution')
   @ApiCreatedResponse({
     type: Institution,
     description: 'Creates a new institution',
@@ -46,7 +46,7 @@ export class InstitutionController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @RolesRules(adminRule)
-  @Put('institutions/:id')
+  @Put('institution/:id')
   @ApiOkResponse({
     type: Institution,
     description: 'Updates an existing institution',

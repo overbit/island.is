@@ -42,7 +42,7 @@ export class InstitutionResolver {
   }
 
   @Mutation(() => Institution, { nullable: true })
-  createCase(
+  createInstitution(
     @Args('input', { type: () => CreateInstitutionInput })
     input: CreateInstitutionInput,
     @CurrentGraphQlUser() user: User,
@@ -59,7 +59,7 @@ export class InstitutionResolver {
   }
 
   @Mutation(() => Institution, { nullable: true })
-  updateCase(
+  updateInstitution(
     @Args('input', { type: () => UpdateInstitutionInput })
     input: UpdateInstitutionInput,
     @CurrentGraphQlUser() user: User,
