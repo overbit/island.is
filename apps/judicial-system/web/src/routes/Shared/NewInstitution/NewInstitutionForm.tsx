@@ -11,10 +11,11 @@ import { FormSettings } from '@island.is/judicial-system-web/src/utils/useFormHe
 
 interface Props {
   onSave: (institution: Institution) => Promise<void>
+  isCreatingInstitution: boolean
 }
 
 const NewInstitutionForm: React.FC<Props> = (props) => {
-  const { onSave } = props
+  const { onSave, isCreatingInstitution } = props
   const [nameErrorMessage, setNameErrorMessage] = useState<string>()
   const [institution, setInstitution] = useState<Institution>({
     id: '',
@@ -88,7 +89,7 @@ const NewInstitutionForm: React.FC<Props> = (props) => {
         <FormFooter
           onNextButtonClick={() => onSave(institution)}
           nextIsDisabled={nameErrorMessage !== undefined}
-          nextIsLoading={false}
+          nextIsLoading={isCreatingInstitution}
           nextButtonText="Vista"
           previousUrl={constants.USER_LIST_ROUTE}
         />

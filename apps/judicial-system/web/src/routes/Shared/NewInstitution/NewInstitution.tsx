@@ -31,7 +31,10 @@ const NewInstitution = () => {
 
   return (
     <PageLayout showSidepanel={false} notFound={false} isLoading={false}>
-      <NewInstitutionForm onSave={createInstitution} />
+      <NewInstitutionForm
+        onSave={createInstitution}
+        isCreatingInstitution={creatingInstitution}
+      />
     </PageLayout>
   )
 }
