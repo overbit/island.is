@@ -17,6 +17,18 @@ export const logoContainer = style({
   marginBottom: theme.spacing[9],
 })
 
+export const InstitutionTableCaption = style({
+  gridRow: '4',
+})
+
+export const InstitutionTable = style({
+  gridRow: '5',
+  gridColumn: '1 / -1',
+
+  // Needed for Safari.
+  width: '100%',
+})
+
 export const userTable = style({
   gridRow: '3',
   gridColumn: '1 / -1',

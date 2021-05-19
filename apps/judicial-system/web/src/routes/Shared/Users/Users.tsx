@@ -5,16 +5,23 @@ import {
   Loading,
   DropdownMenu,
 } from '@island.is/judicial-system-web/src/shared-components'
-import { User, UserRole } from '@island.is/judicial-system/types'
+import { Institution, User, UserRole } from '@island.is/judicial-system/types'
 import * as Constants from '@island.is/judicial-system-web/src/utils/constants'
 import { useQuery } from '@apollo/client'
-import { UsersQuery } from '@island.is/judicial-system-web/src/utils/mutations'
+import {
+  InstitutionsQuery,
+  UsersQuery,
+} from '@island.is/judicial-system-web/src/utils/mutations'
 import { formatNationalId } from '@island.is/judicial-system/formatters'
 import { useRouter } from 'next/router'
 import * as styles from './Users.treat'
 
 interface UserData {
   users: User[]
+}
+
+interface InstitutionData {
+  institutions: Institution[]
 }
 
 export const Users: React.FC = () => {
@@ -25,12 +32,25 @@ export const Users: React.FC = () => {
     errorPolicy: 'all',
   })
 
+  const {
+    data: institutions,
+    error: institutionError,
+    loading: institutionLoading,
+  } = useQuery<InstitutionData>(InstitutionsQuery, {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  })
+
   useEffect(() => {
     document.title = 'Notendur - Réttarvörslugátt'
   }, [])
 
   const handleClick = (user: User): void => {
     router.push(`${Constants.USER_CHANGE_ROUTE}/${user.id}`)
+  }
+
+  const handleInstitutionClick = (institution: Institution): void => {
+    router.push(`#`)
   }
 
   const userRoleToString = (userRole: UserRole) => {
@@ -68,6 +88,7 @@ export const Users: React.FC = () => {
           Notendur
         </Text>
       </Box>
+
       {data && (
         <table
           className={styles.userTable}
@@ -129,6 +150,46 @@ export const Users: React.FC = () => {
                 </td>
                 <td className={styles.td}>
                   <Text as="span">{user.active ? 'Já' : 'Nei'}</Text>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <Box marginY={3} className={styles.InstitutionTableCaption}>
+        <Text variant="h3" id="tableCaption">
+          Stofnanir
+        </Text>
+      </Box>
+      {institutions && (
+        <table
+          className={styles.InstitutionTable}
+          data-testid="detention-requests-table"
+          aria-describedby="tableCation"
+        >
+          <thead className={styles.thead}>
+            <tr>
+              <th className={styles.th}>
+                <Text as="span" fontWeight="regular">
+                  Nafn
+                </Text>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {institutions.institutions.map((institution, i) => (
+              <tr
+                key={i}
+                className={cn(styles.tableRowContainer)}
+                data-testid="detention-requests-table-row"
+                role="button"
+                aria-label="Opna notanda"
+                onClick={() => {
+                  handleInstitutionClick(institution)
+                }}
+              >
+                <td className={styles.td}>
+                  <Text as="span">{institution.name}</Text>
                 </td>
               </tr>
             ))}
