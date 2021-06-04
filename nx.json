@@ -295,6 +295,9 @@
     "clients-middlewares": {
       "tags": []
     },
+    "clients-freshdesk": {
+      "tags": []
+    },
     "clients-mms": {
       "tags": []
     },
