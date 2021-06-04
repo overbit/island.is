@@ -112,6 +112,9 @@
     "api-domains-finance": {
       "tags": []
     },
+    "api-domains-freshdesk": {
+      "tags": []
+    },
     "api-domains-health-insurance": {
       "tags": []
     },
