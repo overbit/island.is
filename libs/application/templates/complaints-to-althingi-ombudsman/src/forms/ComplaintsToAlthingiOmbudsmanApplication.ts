@@ -26,6 +26,7 @@ import {
   section,
   attachments,
   courtAction,
+  submitted,
 } from '../lib/messages'
 import {
   ComplainedForTypes,
@@ -450,6 +451,17 @@ export const ComplaintsToAlthingiOmbudsmanApplication: Form = buildForm({
           uploadDescription: attachments.uploadDescription,
           uploadHeader: attachments.uploadHeader,
           uploadButtonLabel: attachments.uploadButtonLabel,
+        }),
+      ],
+    }),
+    buildSection({
+      id: 'submitted',
+      title: section.submitted,
+      children: [
+        buildCustomField({
+          id: 'submittedCustomField',
+          title: submitted.general.pageTitle,
+          component: 'Submitted',
         }),
       ],
     }),
