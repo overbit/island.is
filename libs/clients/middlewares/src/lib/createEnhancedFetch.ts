@@ -2,33 +2,14 @@ import CircuitBreaker from 'opossum'
 import fetch from 'node-fetch'
 import { Logger } from 'winston'
 import { logger as defaultLogger } from '@island.is/logging'
-
-type FetchAPI = WindowOrWorkerGlobalScope['fetch']
-
-interface FetchProblem {
-  type: string
-  title: string
-  status?: number
-  detail?: string
-  instance?: string
-  [key: string]: unknown
-}
-
-interface FetchError extends Error {
-  url: string
-  status: number
-  headers: Headers
-  statusText: string
-  response: Response
-  body?: unknown
-  problem?: FetchProblem
-}
+import { CachedFetchOptions } from './cachedFetch'
+import { FetchAPI } from "./types";
 
 export interface EnhancedFetchOptions {
   // The name of this fetch function, used in logs and opossum stats.
   name: string
 
-  // Timeout for requests. Defaults to 10000ms. Can be disabled by passing false.
+  // Timeout for requests. Defaults to 5000ms. Can be disabled by passing false.
   timeout?: number | false
 
   // Shortcut to disable circuit breaker. Keeps timeout and logging.
@@ -46,38 +27,14 @@ export interface EnhancedFetchOptions {
   // Configure circuit breaker logic.
   opossum?: CircuitBreaker.Options
 
+  // Enable and configure caching.
+  cache?: CachedFetchOptions
+
   // Override logger.
   logger?: Logger
 
   // Override fetch function.
   fetch?: FetchAPI
-}
-
-const createResponseError = async (response: Response, includeBody = false) => {
-  const error = new Error(
-    `Request failed with status code ${response.status}`,
-  ) as FetchError
-  error.name = 'FetchError'
-  const { url, status, headers, statusText } = response
-  Object.assign(error, { url, status, headers, statusText, response })
-
-  const contentType = response.headers.get('content-type')
-  const isJson = contentType === 'application/json'
-  const isProblem = contentType === 'application/problem+json'
-  const shouldIncludeBody = includeBody && (isJson || isProblem)
-  if (isProblem || shouldIncludeBody) {
-    const body = await response.clone().json()
-    if (shouldIncludeBody) {
-      error.body = body
-    }
-    if (isProblem) {
-      error.problem = body
-    }
-  } else if (includeBody) {
-    error.body = await response.clone().text()
-  }
-
-  return error
 }
 
 /**
@@ -90,7 +47,7 @@ const createResponseError = async (response: Response, includeBody = false) => {
  *   close the circuit and let requests through again.
  *
  * - Includes request timeout logic. By default, throws an error if there is no
- *   response in 10 seconds.
+ *   response in 5 seconds.
  *
  * - Throws an error for non-200 responses. The error object includes details
  *   from the response, including a `problem` property if the response implements
@@ -111,6 +68,7 @@ const createResponseError = async (response: Response, includeBody = false) => {
 export const createEnhancedFetch = (
   options: EnhancedFetchOptions,
 ): FetchAPI => {
+  return compose([createCircuitBreaker, {}])
   const name = options.name
   const actualFetch = options.fetch ?? ((fetch as unknown) as FetchAPI)
   const logger = options.logger ?? defaultLogger

@@ -13,7 +13,7 @@ Returns a fetch function with the following features:
 A new library providing an createEnhancedFetch function.
 
 - Includes circuit breaker logic. By default, if more than 50% of at least 10 requests from the last 10 seconds are misbehaving, we'll open the circuit. All future requests will be stopped to lower pressure on the remote server. Every 30 seconds we'll allow one request through. If it's successful, we'll close the circuit and let requests flow through again.
-- Includes request timeout logic. By default, throws an error if there is no response in 10 seconds.
+- Includes request timeout logic. By default, throws an error if there is no response in 5 seconds.
 - Throws an error for non-200 responses. The error object includes details from the response, including a problem property if the response implements the Problem Spec.
 - Logs circuit breaker events and information about failing requests.
 - Optionally opens the circuit for 400 responses.
@@ -23,7 +23,7 @@ A new library providing an createEnhancedFetch function.
 
 - `name: string` - Name of fetch function. Used in logs and opossum stats.
 - `enableCircuitBreaker?: boolean` - Should use circuit breaker for requests. Defaults to `true`.
-- `timeout?: number | false` - Timeout for requests. Logged and thrown as errors. May cause circuit breaker to open. Defaults to `10000`ms. Can be disabled by passing false.
+- `timeout?: number | false` - Timeout for requests. Logged and thrown as errors. May cause circuit breaker to open. Defaults to `5000`ms. Can be disabled by passing 0.
 - `treat400ResponsesAsErrors?: boolean` - If `true`, then too many 400 responses may cause the circuit to open. Either way these responses will be logged and thrown. Defaults to `false`.
 - `logErrorResponseBody?: boolean` - If `true`, then non-200 response bodies will be consumed and included in the error object and logged as `body`.
 - `opossum?: CircuitBreaker.Options` - Allows overriding Opossum options.
