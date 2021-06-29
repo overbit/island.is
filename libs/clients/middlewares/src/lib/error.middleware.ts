@@ -1,10 +1,9 @@
-import defaultFetch from 'node-fetch'
 import { Logger } from 'winston'
 import { logger as defaultLogger } from '@island.is/logging'
 
-import { FetchAPI, FetchError, Response } from "./types";
+import { FetchAPI, FetchError, Response } from './types'
 
-export interface ErroringFetchOptions {
+export interface ErrorMiddlewareOptions {
   // Name of fetch chain, used in log statements.
   name: string
 
@@ -20,11 +19,12 @@ export interface ErroringFetchOptions {
 
   // Override logger.
   logger?: Logger
-
-  fetch?: FetchAPI
 }
 
-const createResponseError = async (response: Response, includeBody: boolean) => {
+const createResponseError = async (
+  response: Response,
+  includeBody: boolean,
+) => {
   const error = new Error(
     `Request failed with status code ${response.status}`,
   ) as FetchError
@@ -51,14 +51,13 @@ const createResponseError = async (response: Response, includeBody: boolean) => 
   return error
 }
 
-export const createErroringFetch = ({
-  fetch = defaultFetch,
+export const errorMiddleware = ({
   timeout = 5000,
   includeBodyInErrors = false,
   logger = defaultLogger,
   logErrors = true,
-}: ErroringFetchOptions): FetchAPI => {
-  const erroringFetch: FetchAPI = async (input, init) => {
+}: ErrorMiddlewareOptions) => (fetch: FetchAPI): FetchAPI => {
+  return async function errorMiddleware(input, init) {
     try {
       const response = await fetch(input, {
         timeout,
@@ -84,5 +83,4 @@ export const createErroringFetch = ({
       throw error
     }
   }
-  return erroringFetch
 }

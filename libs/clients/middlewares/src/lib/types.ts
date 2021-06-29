@@ -1,4 +1,15 @@
-import type { RequestInfo, RequestInit, Request, Response } from 'node-fetch'
+import type {
+  RequestInfo,
+  RequestInit as FetchInit,
+  Request,
+  Response,
+} from 'node-fetch'
+import type { Auth } from '@island.is/auth-nest-tools'
+
+interface RequestInit extends FetchInit {
+  ttl?: number
+  auth: Auth
+}
 
 export type FetchAPI = (
   info: RequestInfo,

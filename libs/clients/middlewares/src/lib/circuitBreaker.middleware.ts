@@ -1,10 +1,9 @@
-import defaultFetch from 'node-fetch'
 import CircuitBreaker from 'opossum'
 import { Logger } from 'winston'
 import { logger as defaultLogger } from '@island.is/logging'
 import { FetchAPI, FetchError } from './types'
 
-interface CircuitBreakerOptions {
+interface CircuitBreakerMiddlewareOptions {
   // Name of fetch chain, used in log statements.
   name: string
 
@@ -17,17 +16,14 @@ interface CircuitBreakerOptions {
   // By default 400 responses will not open the circuit.
   // This can be changed by passing `treat400ResponsesAsErrors: true`.
   treat400ResponsesAsErrors?: boolean
-
-  fetch?: FetchAPI
 }
 
-export const createCircuitBreakerFetch = ({
+export const circuitBreakerMiddleware = ({
   name,
-  fetch = defaultFetch,
   logger = defaultLogger,
   treat400ResponsesAsErrors = false,
   opossum,
-}: CircuitBreakerOptions): FetchAPI => {
+}: CircuitBreakerMiddlewareOptions) => (fetch: FetchAPI): FetchAPI => {
   const errorFilter = treat400ResponsesAsErrors
     ? opossum?.errorFilter
     : (error: FetchError) => {
@@ -59,5 +55,7 @@ export const createCircuitBreakerFetch = ({
     logger.error(`Fetch (${name}): Circuit breaker closed`),
   )
 
-  return (input, init) => breaker.fire(input, init)
+  return function circuitBrakerMiddleware(input, init) {
+    return breaker.fire(input, init)
+  }
 }

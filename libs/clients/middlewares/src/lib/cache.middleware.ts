@@ -1,6 +1,6 @@
 import { HTTPCache } from 'apollo-datasource-rest'
 import { KeyValueCache } from 'apollo-server-caching'
-import nodeFetch, { Request, Response } from 'node-fetch'
+import { Request, Response } from 'node-fetch'
 import type { RequestInfo, RequestInit } from 'node-fetch'
 import type {
   fetch as apolloFetch,
@@ -17,27 +17,25 @@ type ApolloCacheOptionsArg = (
   request: ApolloRequest,
 ) => CacheOptions
 
-export interface CachedFetchOptions {
+export interface CacheMiddlewareOptions {
   keyValueCache?: KeyValueCache
-  fetch?: typeof nodeFetch
   cacheKey?: (request: Request) => string
   cacheKeyPrefix?: string
   cacheOptions?: CacheOptionsArg
 }
 
-export const createCachedFetch = ({
+export const cacheMiddleware = ({
   keyValueCache,
-  fetch = nodeFetch,
   cacheKey: generateCacheKey = (request) => request.url,
   cacheKeyPrefix = '',
   cacheOptions,
-}: CachedFetchOptions): FetchAPI => {
+}: CacheMiddlewareOptions) => (fetch: FetchAPI): FetchAPI => {
   const httpCache = new HTTPCache(
     keyValueCache,
     (fetch as unknown) as typeof apolloFetch,
   )
 
-  return (input, init) => {
+  return function cacheMiddleware(input, init) {
     const request = new Request(input, init)
     const cacheKey = cacheKeyPrefix + generateCacheKey(request)
 

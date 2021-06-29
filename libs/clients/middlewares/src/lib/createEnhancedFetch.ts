@@ -1,16 +1,19 @@
 import CircuitBreaker from 'opossum'
-import fetch from 'node-fetch'
+import defaultFetch from 'node-fetch'
 import { Logger } from 'winston'
 import { logger as defaultLogger } from '@island.is/logging'
-import { CachedFetchOptions } from './cachedFetch'
-import { FetchAPI } from "./types";
+import { FetchAPI } from './types'
+import { CacheMiddlewareOptions } from './cache.middleware'
+import { circuitBreakerMiddleware } from './circuitBreaker.middleware'
+import { composeMiddleware } from './compose.middleware'
+import { errorMiddleware } from './error.middleware'
 
 export interface EnhancedFetchOptions {
   // The name of this fetch function, used in logs and opossum stats.
   name: string
 
-  // Timeout for requests. Defaults to 5000ms. Can be disabled by passing false.
-  timeout?: number | false
+  // Timeout for requests. Defaults to 5000ms. Can be disabled by passing 0.
+  timeout?: number
 
   // Shortcut to disable circuit breaker. Keeps timeout and logging.
   enableCircuitBreaker?: boolean
@@ -22,13 +25,13 @@ export interface EnhancedFetchOptions {
 
   // If true, will log error response body. Defaults to false.
   // Should only be used if error objects do not have sensitive information or PII.
-  logErrorResponseBody?: boolean
+  includeBodyInErrors?: boolean
 
   // Configure circuit breaker logic.
   opossum?: CircuitBreaker.Options
 
   // Enable and configure caching.
-  cache?: CachedFetchOptions
+  cache?: CacheMiddlewareOptions
 
   // Override logger.
   logger?: Logger
@@ -65,78 +68,32 @@ export interface EnhancedFetchOptions {
  * copied to the Error object), and since these errors are thrown "inside" the
  * fetch call, any "post" middlewares will not be invoked for non-200 responses.
  */
-export const createEnhancedFetch = (
-  options: EnhancedFetchOptions,
-): FetchAPI => {
-  return compose([createCircuitBreaker, {}])
-  const name = options.name
-  const actualFetch = options.fetch ?? ((fetch as unknown) as FetchAPI)
-  const logger = options.logger ?? defaultLogger
-  const timeout = options.timeout ?? 10000
-  const treat400ResponsesAsErrors = options.treat400ResponsesAsErrors === true
+export const createEnhancedFetch = ({
+  name,
+  treat400ResponsesAsErrors = false,
+  enableCircuitBreaker = true,
+  includeBodyInErrors = false,
+  timeout = 5000,
+  opossum,
+  logger = defaultLogger,
+  fetch = defaultFetch,
+}: EnhancedFetchOptions): FetchAPI => {
+  return composeMiddleware(
+    !enableCircuitBreaker
+      ? null
+      : circuitBreakerMiddleware({
+          name,
+          logger,
+          opossum,
+          treat400ResponsesAsErrors,
+        }),
 
-  const enhancedFetch: FetchAPI = async (input, init) => {
-    try {
-      const response = await actualFetch(input, ({
-        timeout,
-        ...init,
-      } as unknown) as RequestInit)
-
-      if (!response.ok) {
-        throw await createResponseError(response, options.logErrorResponseBody)
-      }
-
-      return response
-    } catch (error) {
-      const logLevel =
-        error.name === 'FetchError' &&
-        error.status < 500 &&
-        !treat400ResponsesAsErrors
-          ? 'warn'
-          : 'error'
-      logger.log(logLevel, {
-        ...error,
-        stack: error.stack,
-        url: input,
-        message: `Fetch failure (${name}): ${error.message}`,
-        // Do not log large response objects.
-        response: undefined,
-      })
-      throw error
-    }
-  }
-
-  const errorFilter = treat400ResponsesAsErrors
-    ? options.opossum?.errorFilter
-    : (error: FetchError) => {
-        if (error.name === 'FetchError' && error.status < 500) {
-          return true
-        }
-        return options.opossum?.errorFilter?.(error) ?? false
-      }
-
-  const breaker = new CircuitBreaker(enhancedFetch, {
-    name,
-    volumeThreshold: 10,
-    // False disables timeout logic, the types are incorrect.
-    // We want to use our own timeout logic so we can disable the circuit
-    // breaker while still supporting timeouts.
-    timeout: (false as unknown) as number,
-    enabled: options.enableCircuitBreaker !== false,
-
-    ...options.opossum,
-    errorFilter,
-  })
-
-  breaker.on('open', () =>
-    logger.error(`Fetch (${name}): Too many errors, circuit breaker opened`),
-  )
-  breaker.on('halfOpen', () =>
-    logger.error(`Fetch (${name}): Circuit breaker half-open`),
-  )
-  breaker.on('close', () =>
-    logger.error(`Fetch (${name}): Circuit breaker closed`),
-  )
-
-  return (input, init) => breaker.fire(input, init)
+    errorMiddleware({
+      name,
+      timeout,
+      includeBodyInErrors,
+      logger,
+    }),
+  )(fetch)
 }
+

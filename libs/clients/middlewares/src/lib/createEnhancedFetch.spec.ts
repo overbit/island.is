@@ -3,18 +3,11 @@ import {
   EnhancedFetchOptions,
 } from './createEnhancedFetch'
 import { Logger } from 'winston'
-import { Response as FakeResponse } from 'node-fetch'
+import { Response } from 'node-fetch'
 import { SetOptional } from 'type-fest'
-
-const fakeResponse = (
-  ...args: ConstructorParameters<typeof FakeResponse>
-): Response => (new FakeResponse(...args) as unknown) as Response
-
-type FetchAPI = WindowOrWorkerGlobalScope['fetch']
+import { FetchAPI } from './types'
 
 const timeout = 500
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 describe('EnhancedFetch', () => {
   let enhancedFetch: FetchAPI
@@ -37,7 +30,7 @@ describe('EnhancedFetch', () => {
     })
 
   beforeEach(() => {
-    fetch = jest.fn(() => Promise.resolve(fakeResponse()))
+    fetch = jest.fn(() => Promise.resolve(new Response()))
     logger = {
       log: jest.fn(),
       error: jest.fn(),
@@ -76,7 +69,7 @@ describe('EnhancedFetch', () => {
   it('logs server response errors', async () => {
     // Arrange
     fetch.mockResolvedValue(
-      fakeResponse('Error', {
+      new Response('Error', {
         status: 500,
         statusText: 'Server Test Error',
       }),
@@ -100,7 +93,7 @@ describe('EnhancedFetch', () => {
   it('supports response problem spec', async () => {
     // Arrange
     fetch.mockResolvedValue(
-      fakeResponse('{"title": "Problem", "type": "my-problem"}', {
+      new Response('{"title": "Problem", "type": "my-problem"}', {
         status: 500,
         statusText: 'Server Test Error',
         headers: {
@@ -123,9 +116,9 @@ describe('EnhancedFetch', () => {
 
   it('can optionally log json body', async () => {
     // Arrange
-    enhancedFetch = createTestEnhancedFetch({ logErrorResponseBody: true })
+    enhancedFetch = createTestEnhancedFetch({ includeBodyInErrors: true })
     fetch.mockResolvedValue(
-      fakeResponse('{"yo": "error"}', {
+      new Response('{"yo": "error"}', {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       }),
@@ -144,8 +137,8 @@ describe('EnhancedFetch', () => {
 
   it('can optionally log text body', async () => {
     // Arrange
-    enhancedFetch = createTestEnhancedFetch({ logErrorResponseBody: true })
-    fetch.mockResolvedValue(fakeResponse('My Error', { status: 500 }))
+    enhancedFetch = createTestEnhancedFetch({ includeBodyInErrors: true })
+    fetch.mockResolvedValue(new Response('My Error', { status: 500 }))
 
     // Act
     const error = await enhancedFetch('/test').catch((error) => error)
@@ -160,7 +153,7 @@ describe('EnhancedFetch', () => {
 
   it('opens circuit after enough 500 errors', async () => {
     // Arrange
-    fetch.mockResolvedValue(fakeResponse('Error', { status: 500 }))
+    fetch.mockResolvedValue(new Response('Error', { status: 500 }))
     await enhancedFetch('/test').catch(() => null)
 
     // Act
@@ -175,7 +168,7 @@ describe('EnhancedFetch', () => {
 
   it('does not open circuit for 400 responses', async () => {
     // Arrange
-    fetch.mockResolvedValue(fakeResponse('Error', { status: 400 }))
+    fetch.mockResolvedValue(new Response('Error', { status: 400 }))
     await enhancedFetch('/test').catch(() => null)
 
     // Act
@@ -191,7 +184,7 @@ describe('EnhancedFetch', () => {
   it('can be configured to open circuit for 400 errors', async () => {
     // Arrange
     enhancedFetch = createTestEnhancedFetch({ treat400ResponsesAsErrors: true })
-    fetch.mockResolvedValue(fakeResponse('Error', { status: 400 }))
+    fetch.mockResolvedValue(new Response('Error', { status: 400 }))
     await enhancedFetch('/test').catch(() => null)
 
     // Act
