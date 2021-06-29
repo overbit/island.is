@@ -407,6 +407,8 @@ export const slices = gql`
     }
     content {
       ...HtmlFields
+      ...ImageFields
+      ...AssetFields
     }
   }
 

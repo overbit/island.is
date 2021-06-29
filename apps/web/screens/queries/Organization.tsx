@@ -191,3 +191,15 @@ export const GET_HOMESTAYS_QUERY = gql`
     }
   }
 `
+
+export const GET_OPERATING_LICENSES_QUERY = gql`
+  query GetOperatingLicenses {
+    getOperatingLicenses {
+      location
+      name
+      issuedBy
+      validUntil
+      licenseHolder
+    }
+  }
+`
