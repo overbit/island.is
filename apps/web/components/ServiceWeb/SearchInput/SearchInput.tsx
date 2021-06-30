@@ -5,12 +5,6 @@ import {
   AsyncSearchOption,
   AsyncSearchProps,
 } from '@island.is/island-ui/core'
-import {
-  FreshdeskSearchQuery,
-  FreshdeskSearchQueryVariables,
-} from '@island.is/web/graphql/schema'
-
-import { FRESHDESK_SEARCH } from '../../../screens/queries/Freshdesk'
 
 const DEBOUNCE_TIMER = 600
 
@@ -31,30 +25,36 @@ export const SearchInput = ({
   const [isBusy, setIsBusy] = useState<boolean>(false)
   const [searchTerms, setSearchTerms] = useState<string>('')
 
-  const [doSearch, { data, loading, called, error }] = useLazyQuery<
-    FreshdeskSearchQuery,
-    FreshdeskSearchQueryVariables
-  >(FRESHDESK_SEARCH, {
-    variables: {
-      input: {
-        terms: searchTerms,
-      },
-    },
-  })
+  //const [doSearch, { data, loading, called, error }] = useLazyQuery<
+  //  FreshdeskSearchQuery,
+  //  FreshdeskSearchQueryVariables
+  //>(FRESHDESK_SEARCH, {
+  //  variables: {
+  //    input: {
+  //      terms: searchTerms,
+  //    },
+  //  },
+  //})
 
   useMemo(() => {
     clearTimeout(timerRef.current)
 
-    if (!called && searchTerms) {
+    //if (!called && searchTerms) {
+    if(searchTerms) {
       console.log('first search!', searchTerms)
-      doSearch()
+      //doSearch()
     } else {
       timerRef.current = setTimeout(() => {
-        doSearch()
+        //doSearch()
         console.log('doing new search!', searchTerms)
       }, DEBOUNCE_TIMER)
     }
   }, [searchTerms])
+  const data = {
+    freshdeskSearch: [
+      { title: "Hallo" }
+    ]
+  }
 
   const options =
     data?.freshdeskSearch?.map(({ title }, index) => {
@@ -74,7 +74,8 @@ export const SearchInput = ({
         console.log('onChange', value)
       }}
       inputValue={searchTerms}
-      loading={loading}
+      //loading={loading}
+      loading={false}
       onInputValueChange={(value) => setSearchTerms(value)}
     />
   )

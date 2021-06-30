@@ -267,10 +267,6 @@ const prodConfig = {
     groupName: process.env.AUDIT_GROUP_NAME,
     serviceName: 'api',
   },
-  freshdesk: {
-    domain: process.env.FRESHDESK_DOMAIN ?? '',
-    key: process.env.FRESHDESK_KEY ?? '',
-  },
 }
 
 export default process.env.NODE_ENV === 'production' ? prodConfig : devConfig
