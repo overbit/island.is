@@ -138,10 +138,6 @@ const devConfig = {
   audit: {
     defaultNamespace: '@island.is/api',
   },
-  freshdesk: {
-    domain: process.env.FRESHDESK_DOMAIN ?? '',
-    key: process.env.FRESHDESK_KEY ?? '',
-  },
 }
 
 const prodConfig = {

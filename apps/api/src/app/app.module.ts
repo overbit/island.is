@@ -33,7 +33,6 @@ import { ApiDomainsPaymentModule } from '@island.is/api/domains/payment'
 import { TemporaryVoterRegistryModule } from '@island.is/api/domains/temporary-voter-registry'
 import { PartyLetterRegistryModule } from '@island.is/api/domains/party-letter-registry'
 import { LicenseServiceModule } from '@island.is/api/domains/license-service'
-import { FreshdeskModule } from '@island.is/api/domains/freshdesk'
 import { AuditModule } from '@island.is/nest/audit'
 
 import { maskOutFieldsMiddleware } from './graphql.middleware'
@@ -223,10 +222,6 @@ const autoSchemaFile = environment.production
         apiUrl: environment.pkpass.apiUrl,
         secretKey: environment.pkpass.secretKey,
       },
-    }),
-    FreshdeskModule.register({
-      domain: environment.freshdesk.domain,
-      key: environment.freshdesk.key,
     }),
   ],
 })
