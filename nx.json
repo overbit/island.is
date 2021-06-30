@@ -112,9 +112,6 @@
     "api-domains-finance": {
       "tags": []
     },
-    "api-domains-freshdesk": {
-      "tags": []
-    },
     "api-domains-health-insurance": {
       "tags": []
     },
@@ -296,9 +293,6 @@
       "tags": []
     },
     "clients-middlewares": {
-      "tags": []
-    },
-    "clients-freshdesk": {
       "tags": []
     },
     "clients-mms": {

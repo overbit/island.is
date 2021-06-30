@@ -1059,27 +1059,6 @@
         }
       }
     },
-    "api-domains-freshdesk": {
-      "root": "libs/api/domains/freshdesk",
-      "sourceRoot": "libs/api/domains/freshdesk/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/api/domains/freshdesk/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/domains/freshdesk"],
-          "options": {
-            "jestConfig": "libs/api/domains/freshdesk/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "api-domains-health-insurance": {
       "root": "libs/api/domains/health-insurance",
       "sourceRoot": "libs/api/domains/health-insurance/src",
@@ -3144,27 +3123,6 @@
           "outputs": ["coverage/libs/clients/middlewares"],
           "options": {
             "jestConfig": "libs/clients/middlewares/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "clients-freshdesk": {
-      "root": "libs/clients/freshdesk",
-      "sourceRoot": "libs/clients/freshdesk/src",
-      "projectType": "library",
-      "architect": {
-        "lint": {
-          "builder": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/clients/freshdesk/**/*.ts"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/clients/freshdesk"],
-          "options": {
-            "jestConfig": "libs/clients/freshdesk/jest.config.js",
             "passWithNoTests": true
           }
         }
