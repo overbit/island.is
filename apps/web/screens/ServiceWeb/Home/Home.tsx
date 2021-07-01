@@ -7,7 +7,7 @@ import {
   QueryGetNamespaceArgs,
   QueryGetOrganizationArgs,
 } from '@island.is/web/graphql/schema'
-import { GET_NAMESPACE_QUERY, GET_ORGANIZATION_QUERY } from '../../queries'
+import { GET_NAMESPACE_QUERY, GET_ORGANIZATION_QUERY, GET_SUPPORT_QNA_QUERY } from '../../queries'
 import { Screen } from '../../../types'
 import {
   Accordion,

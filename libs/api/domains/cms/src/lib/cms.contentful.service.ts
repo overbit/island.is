@@ -303,7 +303,10 @@ export class CmsContentfulService {
     return (result.items as types.IAuction[]).map(mapAuction)[0]
   }
 
-  async getProjectPage (slug: string, lang: string): Promise<ProjectPage> {
+  async getProjectPage (
+    slug: string,
+    lang: string,
+  ): Promise<ProjectPage | null> {
     const params = {
       ['content_type']: 'projectPage',
       'fields.slug': slug,
@@ -313,7 +316,9 @@ export class CmsContentfulService {
       .getLocalizedEntries<types.IProjectPageFields>(lang, params)
       .catch(errorHandler('getProjectPage'))
 
-    return mapProjectPage(result.items[0] as IProjectPage)
+    return result.items.length
+      ? mapProjectPage(result.items[0] as IProjectPage)
+      : null
   }
 
   async getArticle (slug: string, lang: string): Promise<Article | null> {
