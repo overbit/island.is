@@ -7,7 +7,11 @@ import {
   QueryGetNamespaceArgs,
   QueryGetOrganizationArgs,
 } from '@island.is/web/graphql/schema'
-import { GET_NAMESPACE_QUERY, GET_ORGANIZATION_QUERY, GET_SUPPORT_QNA_QUERY } from '../../queries'
+import {
+  GET_NAMESPACE_QUERY,
+  GET_ORGANIZATION_QUERY,
+  GET_SUPPORT_QNA_QUERY,
+} from '../../queries'
 import { Screen } from '../../../types'
 import {
   Accordion,
@@ -42,10 +46,7 @@ interface HomeProps {
   namespace: Query['getNamespace']
 }
 
-const Home: Screen<HomeProps> = ({
-  organization,
-  namespace,
-}) => {
+const Home: Screen<HomeProps> = ({ organization, namespace }) => {
   // const linkResolver = useLinkResolver()
   const { width } = useWindowSize()
 
@@ -61,9 +62,9 @@ const Home: Screen<HomeProps> = ({
   const searchTitle = 'Getum við aðstoðað?'
   const freshdeskCategories = [
     {
-      name: "Hundur",
-      description: "Hann er forseti"
-    }
+      name: 'Hundur',
+      description: 'Hann er forseti',
+    },
   ]
 
   return (
@@ -229,9 +230,9 @@ Home.getInitialProps = async ({ apolloClient, locale, query }) => {
       variables: {
         input: {
           slug,
-          lang: locale as ContentLanguage
-        }
-      }
+          lang: locale as ContentLanguage,
+        },
+      },
     }),
     apolloClient
       .query<Query, QueryGetNamespaceArgs>({

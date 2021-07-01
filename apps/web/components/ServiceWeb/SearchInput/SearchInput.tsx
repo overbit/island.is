@@ -40,7 +40,7 @@ export const SearchInput = ({
     clearTimeout(timerRef.current)
 
     //if (!called && searchTerms) {
-    if(searchTerms) {
+    if (searchTerms) {
       console.log('first search!', searchTerms)
       //doSearch()
     } else {
@@ -51,9 +51,7 @@ export const SearchInput = ({
     }
   }, [searchTerms])
   const data = {
-    freshdeskSearch: [
-      { title: "Hallo" }
-    ]
+    freshdeskSearch: [{ title: 'Hallo' }],
   }
 
   const options =
