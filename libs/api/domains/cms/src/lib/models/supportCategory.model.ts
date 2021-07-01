@@ -5,7 +5,7 @@ import { ISupportCategory } from '../generated/contentfulTypes'
 @ObjectType()
 export class SupportCategory {
   @Field()
-  title: string
+  title!: string
 }
 
 export const mapSupportCategory = ({
