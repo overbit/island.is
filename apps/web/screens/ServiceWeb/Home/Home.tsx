@@ -212,6 +212,7 @@ const Home: Screen<HomeProps> = ({
 Home.getInitialProps = async ({ apolloClient, locale, query }) => {
   const slug = query.slug as string
 
+  //const [organization, supportQNA, namespace] = await Promise.all([
   const [organization, namespace] = await Promise.all([
     !!slug &&
       apolloClient.query<Query, QueryGetOrganizationArgs>({
@@ -223,6 +224,15 @@ Home.getInitialProps = async ({ apolloClient, locale, query }) => {
           },
         },
       }),
+    apolloClient.query<Query, QueryGetOrganizationArgs>({
+      query: GET_SUPPORT_QNA_QUERY,
+      variables: {
+        input: {
+          slug,
+          lang: locale as ContentLanguage
+        }
+      }
+    }),
     apolloClient
       .query<Query, QueryGetNamespaceArgs>({
         query: GET_NAMESPACE_QUERY,
