@@ -1,16 +1,20 @@
 import gql from 'graphql-tag'
+import { slices } from './fragments'
 
 export const GET_SUPPORT_QNA_QUERY = gql`
-  query GetSupportQNA($input: GetSupportQNAInput!) {
-    getSupportQNA(input: $input) {
+  query GetSupportQNAs($input: GetSupportQNAInput!) {
+    getSupportQNAs(input: $input) {
       items {
         id
         question
-        answer
+        answer {
+          ...AllSlices
+        }
         category {
           title
         }
       }
     }
   }
+  ${slices}
 `

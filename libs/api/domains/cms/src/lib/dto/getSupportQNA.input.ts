@@ -3,11 +3,6 @@ import { IsOptional, IsString } from 'class-validator'
 
 @InputType()
 export class GetSupportQNAInput {
-  @Field()
-  @IsString()
-  @IsOptional()
-  slug?: string
-
   @Field(() => String)
   @IsString()
   lang = 'is-IS'

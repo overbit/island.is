@@ -6,6 +6,7 @@ import {
   Query,
   QueryGetNamespaceArgs,
   QueryGetOrganizationArgs,
+  QueryGetSupportQnAsArgs,
 } from '@island.is/web/graphql/schema'
 import {
   GET_NAMESPACE_QUERY,
@@ -23,7 +24,6 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 
-import { questions } from '../mock'
 import {
   Card,
   SimpleSlider,
@@ -40,13 +40,17 @@ import { useWindowSize } from '@island.is/web/hooks/useViewport'
 import { asSlug } from '../utils'
 import * as styles from './Home.treat'
 import * as sharedStyles from '../shared/styles.treat'
+import { SupportQnAs } from '@island.is/api/schema'
+import { richText, SliceType } from '@island.is/island-ui/contentful'
+
 
 interface HomeProps {
   organization?: Organization
-  namespace: Query['getNamespace']
+  namespace: Query['getNamespace'],
+  supportQNAs: Query['getSupportQNAs']
 }
 
-const Home: Screen<HomeProps> = ({ organization, namespace }) => {
+const Home: Screen<HomeProps> = ({ organization, supportQNAs, namespace }) => {
   // const linkResolver = useLinkResolver()
   const { width } = useWindowSize()
 
@@ -60,13 +64,8 @@ const Home: Screen<HomeProps> = ({ organization, namespace }) => {
     '//images.ctfassets.net/8k0h54kbe6bj/6XhCz5Ss17OVLxpXNVDxAO/d3d6716bdb9ecdc5041e6baf68b92ba6/coat_of_arms.svg'
 
   const searchTitle = 'Getum við aðstoðað?'
-  const freshdeskCategories = [
-    {
-      name: 'Hundur',
-      description: 'Hann er forseti',
-    },
-  ]
-
+  const freshdeskCategoryNames = [...new Set(supportQNAs.items.map(i => i.category?.title))]
+  const freshdeskCategories = freshdeskCategoryNames.map(i => { return {name: i, description: 'Description'}})
   return (
     <>
       <ServiceWebHeader hideSearch logoTitle={logoTitle} />
@@ -102,7 +101,7 @@ const Home: Screen<HomeProps> = ({ organization, namespace }) => {
                       link={
                         {
                           href: `/thjonustuvefur/${
-                            organization?.slug + '/' ?? ''
+                            organization?.slug ? organization.slug + '/' : ''
                           }${asSlug(name)}`,
                         } as LinkResolverResponse
                       }
@@ -188,14 +187,14 @@ const Home: Screen<HomeProps> = ({ organization, namespace }) => {
 
                 <Box marginTop={[2, 2, 4, 8]}>
                   <Accordion dividerOnTop={false} dividerOnBottom={false}>
-                    {questions.map(({ title }, index) => {
+                    {supportQNAs.items.map(({ question, answer }, index) => {
                       return (
                         <AccordionItem
                           key={index}
                           id={`service-web-faq-${index}`}
-                          label={title}
+                          label={question}
                         >
-                          {title}
+                          {richText(answer as SliceType[])}
                         </AccordionItem>
                       )
                     })}
@@ -213,8 +212,7 @@ const Home: Screen<HomeProps> = ({ organization, namespace }) => {
 Home.getInitialProps = async ({ apolloClient, locale, query }) => {
   const slug = query.slug as string
 
-  //const [organization, supportQNA, namespace] = await Promise.all([
-  const [organization, namespace] = await Promise.all([
+  const [organization, supportQNA, namespace] = await Promise.all([
     !!slug &&
       apolloClient.query<Query, QueryGetOrganizationArgs>({
         query: GET_ORGANIZATION_QUERY,
@@ -225,11 +223,10 @@ Home.getInitialProps = async ({ apolloClient, locale, query }) => {
           },
         },
       }),
-    apolloClient.query<Query, QueryGetOrganizationArgs>({
+    apolloClient.query<Query, QueryGetSupportQnAsArgs>({
       query: GET_SUPPORT_QNA_QUERY,
       variables: {
         input: {
-          slug,
           lang: locale as ContentLanguage,
         },
       },
@@ -253,6 +250,7 @@ Home.getInitialProps = async ({ apolloClient, locale, query }) => {
 
   return {
     organization: organization?.data?.getOrganization,
+    supportQNAs: supportQNA?.data?.getSupportQNAs,
     namespace,
   }
 }
