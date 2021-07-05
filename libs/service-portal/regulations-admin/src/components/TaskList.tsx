@@ -67,7 +67,7 @@ export const TaskList = () => {
       </Text>
       <Stack space={2}>
         {regulationDraft.map((item) => {
-          const { id, title, idealPublishDate, draftingStatus } = item
+          const { id, title, idealPublishDate, draftingStatus, authors } = item
           const idealDate = getReqDate(idealPublishDate)
           const statusLabel = formatMessage(statusMsgs[draftingStatus])
           return (
@@ -76,16 +76,15 @@ export const TaskList = () => {
               date={idealDate.label}
               backgroundColor={idealDate.fastTrack ? 'blue' : undefined}
               heading={title}
-              // tag={{
-              //   label: formatMessage(statusMsgs[draftingStatus]),
-              //   variant: draftingStatus === 'proposal' ? 'blue' : undefined,
-              //   // outlined: false,
-              // }}
-              text={`(${statusLabel})`}
+              tag={{
+                label: formatMessage(statusMsgs[draftingStatus]),
+                outlined: true,
+                variant: draftingStatus === 'proposal' ? 'blueberry' : 'red',
+              }}
+              text={authors.map(({ name }) => name).join(', ')}
               cta={{
                 label: formatMessage(msg.cta),
-                variant: draftingStatus === 'draft' ? 'ghost' : undefined,
-                size: 'small',
+                // variant: draftingStatus === 'draft' ? 'ghost' : undefined,
                 onClick: () => {
                   history.push(
                     generatePath(ServicePortalPath.RegulationsAdminEdit, {
@@ -93,7 +92,6 @@ export const TaskList = () => {
                     }),
                   )
                 },
-                // icon: undefined,
               }}
             />
           )
