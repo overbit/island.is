@@ -6,10 +6,18 @@ import { ISupportCategory } from '../generated/contentfulTypes'
 export class SupportCategory {
   @Field()
   title!: string
+
+  @Field()
+  slug!: string
+
+  @Field()
+  description?: string
 }
 
 export const mapSupportCategory = ({
   fields,
 }: ISupportCategory): SupportCategory => ({
   title: fields.title,
+  slug: fields.slug ?? '',
+  description: fields.description ?? '',
 })

@@ -30,23 +30,17 @@ import {
   ServiceWebSearchSection,
   ServiceWebHeader,
 } from '@island.is/web/components'
-import {
-  LinkResolverResponse,
-  useLinkResolver,
-} from '@island.is/web/hooks/useLinkResolver'
+import { LinkResolverResponse } from '@island.is/web/hooks/useLinkResolver'
 import { theme } from '@island.is/island-ui/theme'
 import { useWindowSize } from '@island.is/web/hooks/useViewport'
 
-import { asSlug } from '../utils'
 import * as styles from './Home.treat'
 import * as sharedStyles from '../shared/styles.treat'
-import { SupportQnAs } from '@island.is/api/schema'
 import { richText, SliceType } from '@island.is/island-ui/contentful'
-
 
 interface HomeProps {
   organization?: Organization
-  namespace: Query['getNamespace'],
+  namespace: Query['getNamespace']
   supportQNAs: Query['getSupportQNAs']
 }
 
@@ -63,9 +57,14 @@ const Home: Screen<HomeProps> = ({ organization, supportQNAs, namespace }) => {
     organization?.logo?.url ??
     '//images.ctfassets.net/8k0h54kbe6bj/6XhCz5Ss17OVLxpXNVDxAO/d3d6716bdb9ecdc5041e6baf68b92ba6/coat_of_arms.svg'
 
+  let supportCategories = {}
+  for (const item of supportQNAs.items) {
+    if (item.category) {
+      supportCategories[item.category.slug] = item.category
+    }
+  }
+
   const searchTitle = 'Getum við aðstoðað?'
-  const freshdeskCategoryNames = [...new Set(supportQNAs.items.map(i => i.category?.title))]
-  const freshdeskCategories = freshdeskCategoryNames.map(i => { return {name: i, description: 'Description'}})
   return (
     <>
       <ServiceWebHeader hideSearch logoTitle={logoTitle} />
@@ -88,25 +87,28 @@ const Home: Screen<HomeProps> = ({ organization, supportQNAs, namespace }) => {
               </GridColumn>
             </GridRow>
             <GridRow>
-              {freshdeskCategories.map(({ name, description }, index) => {
+              {Object.keys(supportCategories).map((categoryName) => {
+                let category = supportCategories[categoryName]
                 return (
-                  <GridColumn
-                    key={index}
-                    span={['12/12', '6/12', '6/12', '4/12']}
-                    paddingBottom={[2, 2, 3]}
-                  >
-                    <Card
-                      title={name}
-                      description={description}
-                      link={
-                        {
-                          href: `/thjonustuvefur/${
-                            organization?.slug ? organization.slug + '/' : ''
-                          }${asSlug(name)}`,
-                        } as LinkResolverResponse
-                      }
-                    />
-                  </GridColumn>
+                  category && (
+                    <GridColumn
+                      key={category.slug}
+                      span={['12/12', '6/12', '6/12', '4/12']}
+                      paddingBottom={[2, 2, 3]}
+                    >
+                      <Card
+                        title={category.title}
+                        description={category.description}
+                        link={
+                          {
+                            href: `/thjonustuvefur/${
+                              organization?.slug ? organization.slug : 'island'
+                            }?category=${category.slug}`,
+                          } as LinkResolverResponse
+                        }
+                      />
+                    </GridColumn>
+                  )
                 )
               })}
             </GridRow>
@@ -141,22 +143,23 @@ const Home: Screen<HomeProps> = ({ organization, supportQNAs, namespace }) => {
                       slideWidthOffset: 400,
                     },
                   }}
-                  items={freshdeskCategories.map(
-                    ({ name, description }, index) => {
-                      return (
-                        <Card
-                          key={index}
-                          title={name}
-                          description={description}
-                          link={
-                            {
-                              href: `/thjonustuvefur/${asSlug(name)}`,
-                            } as LinkResolverResponse
-                          }
-                        />
-                      )
-                    },
-                  )}
+                  items={Object.keys(supportCategories).map((categoryName) => {
+                    let category = supportCategories[categoryName]
+                    return (
+                      <Card
+                        key={category.slug}
+                        title={category.title}
+                        description={category.description}
+                        link={
+                          {
+                            href: `/thjonustuvefur/${
+                              organization?.slug ? organization.slug : 'island'
+                            }?category=${category.slug}`,
+                          } as LinkResolverResponse
+                        }
+                      />
+                    )
+                  })}
                 />
               </GridColumn>
             </GridRow>
@@ -221,6 +224,7 @@ Home.getInitialProps = async ({ apolloClient, locale, query }) => {
       query: GET_SUPPORT_QNA_QUERY,
       variables: {
         input: {
+          slug: '',
           lang: locale as ContentLanguage,
         },
       },

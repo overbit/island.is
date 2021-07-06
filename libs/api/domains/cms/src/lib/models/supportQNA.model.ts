@@ -22,6 +22,9 @@ export class SupportQNA {
 
   @Field(() => SupportCategory, { nullable: true })
   category?: SupportCategory
+
+  @Field()
+  slug!: string
 }
 
 export const mapSupportQNA = ({ fields, sys }: ISupportQna): SupportQNA => ({
@@ -32,4 +35,5 @@ export const mapSupportQNA = ({ fields, sys }: ISupportQna): SupportQNA => ({
     ? mapOrganization(fields.organization)
     : null,
   category: fields.category?.fields,
+  slug: fields.slug,
 })

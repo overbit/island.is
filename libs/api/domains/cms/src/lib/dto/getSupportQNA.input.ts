@@ -6,4 +6,8 @@ export class GetSupportQNAInput {
   @Field(() => String)
   @IsString()
   lang = 'is-IS'
+
+  @Field(() => String)
+  @IsOptional()
+  slug?: string
 }

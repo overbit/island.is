@@ -12,7 +12,10 @@ export const GET_SUPPORT_QNA_QUERY = gql`
         }
         category {
           title
+          description
+          slug
         }
+        slug
       }
     }
   }

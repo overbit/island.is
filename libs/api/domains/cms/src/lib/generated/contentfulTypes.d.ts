@@ -2895,6 +2895,12 @@ export interface ISubpageHeader extends Entry<ISubpageHeaderFields> {
 export interface ISupportCategoryFields {
   /** Title */
   title: string
+
+  /** slug */
+  slug: string
+
+  /** description */
+  description?: string | undefined
 }
 
 export interface ISupportCategory extends Entry<ISupportCategoryFields> {
@@ -2926,6 +2932,9 @@ export interface ISupportQnaFields {
 
   /** Category */
   category?: ISupportCategory | undefined
+
+  /** Slug */
+  slug: string
 }
 
 /** Support question and answer */
