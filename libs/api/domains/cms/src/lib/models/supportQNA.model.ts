@@ -17,12 +17,6 @@ export class SupportQNA {
   @Field(() => [SliceUnion])
   answer: Array<typeof SliceUnion> = []
 
-  @Field(() => Organization, { nullable: true })
-  organization?: Organization | null
-
-  @Field(() => SupportCategory, { nullable: true })
-  category?: SupportCategory
-
   @Field()
   slug!: string
 }
@@ -31,9 +25,5 @@ export const mapSupportQNA = ({ fields, sys }: ISupportQna): SupportQNA => ({
   id: sys.id,
   question: fields.question,
   answer: fields.answer ? mapDocument(fields.answer, sys.id) : [],
-  organization: fields.organization
-    ? mapOrganization(fields.organization)
-    : null,
-  category: fields.category?.fields,
   slug: fields.slug,
 })
