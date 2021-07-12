@@ -2896,12 +2896,20 @@ export interface ISupportCategoryFields {
   /** Title */
   title: string
 
+  /** Description */
+  description?: string | undefined
+
   /** slug */
   slug: string
 
-  /** description */
-  description?: string | undefined
+  /** SubCategories */
+  subCategories?: ISupportSubCategory[] | undefined
+
+  /** Organization */
+  organization?: IOrganization | undefined
 }
+
+/** Category for the helpdesk questions, used for grouping QNAs */
 
 export interface ISupportCategory extends Entry<ISupportCategoryFields> {
   sys: {
@@ -2927,17 +2935,11 @@ export interface ISupportQnaFields {
   /** Answer */
   answer: Document
 
-  /** Organization */
-  organization?: IOrganization | undefined
-
-  /** Category */
-  category?: ISupportCategory | undefined
-
-  /** Slug */
+  /** slug */
   slug: string
 }
 
-/** Support question and answer */
+/** Helpdesk support questions and answer */
 
 export interface ISupportQna extends Entry<ISupportQnaFields> {
   sys: {
@@ -2949,6 +2951,37 @@ export interface ISupportQna extends Entry<ISupportQnaFields> {
     contentType: {
       sys: {
         id: 'supportQNA'
+        linkType: 'ContentType'
+        type: 'Link'
+      }
+    }
+  }
+}
+
+export interface ISupportSubCategoryFields {
+  /** Title */
+  title: string
+
+  /** Description */
+  description?: string | undefined
+
+  /** slug */
+  slug: string
+
+  /** Questions and Answers */
+  qnas?: ISupportQna[] | undefined
+}
+
+export interface ISupportSubCategory extends Entry<ISupportSubCategoryFields> {
+  sys: {
+    id: string
+    type: string
+    createdAt: string
+    updatedAt: string
+    locale: string
+    contentType: {
+      sys: {
+        id: 'supportSubCategory'
         linkType: 'ContentType'
         type: 'Link'
       }
@@ -3722,6 +3755,7 @@ export type CONTENT_TYPE =
   | 'subpageHeader'
   | 'supportCategory'
   | 'supportQNA'
+  | 'supportSubCategory'
   | 'tabContent'
   | 'tabSection'
   | 'teamList'
