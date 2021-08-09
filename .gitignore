@@ -76,3 +76,4 @@ fragmentTypes.json
 # IDE - Visual Studio
 *.suo
 /.vs
+.python-version
