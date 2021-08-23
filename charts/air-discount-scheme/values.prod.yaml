@@ -2,10 +2,10 @@ air-discount-scheme-api:
   enabled: true
   env:
     AUTH_AUDIENCE: loftbru.island.is
-    BACKEND_URL: http://web-air-discount-scheme-backend
+    BACKEND_URL: 'http://web-air-discount-scheme-backend'
     CONTENTFUL_HOST: cdn.contentful.com
-    ELASTIC_NODE: https://vpc-search-mw4w5c2m2g5edjrtvwbpzhkw24.eu-west-1.es.amazonaws.com
-    SAML_ENTRY_POINT: https://innskraning.island.is/?id=ads.prod
+    ELASTIC_NODE: 'https://vpc-search-mw4w5c2m2g5edjrtvwbpzhkw24.eu-west-1.es.amazonaws.com'
+    SAML_ENTRY_POINT: 'https://innskraning.island.is/?id=ads.prod'
   grantNamespaces: []
   grantNamespacesEnabled: false
   healthCheck:
@@ -47,7 +47,7 @@ air-discount-scheme-api:
     privileged: false
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::251502586493:role/air-discount-scheme-api
+      eks.amazonaws.com/role-arn: 'arn:aws:iam::251502586493:role/air-discount-scheme-api'
     create: true
     name: air-discount-scheme-api
 air-discount-scheme-backend:
@@ -86,7 +86,7 @@ air-discount-scheme-backend:
     containers:
       - args:
           - sequelize-cli
-          - db:migrate
+          - 'db:migrate'
         command:
           - npx
     env:
@@ -114,7 +114,7 @@ air-discount-scheme-backend:
 air-discount-scheme-web:
   enabled: true
   env:
-    API_URL: http://web-air-discount-scheme-api
+    API_URL: 'http://web-air-discount-scheme-api'
   grantNamespaces: []
   grantNamespacesEnabled: false
   healthCheck:
@@ -155,7 +155,7 @@ global:
   env:
     AUDIT_GROUP_NAME: /island-is/audit-log
     AWS_REGION: eu-west-1
-    IDENTITY_SERVER_ISSUER_URL: https://innskra.island.is
+    IDENTITY_SERVER_ISSUER_URL: 'https://innskra.island.is'
     PORT: '3333'
     name: prod
   image:
