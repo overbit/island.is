@@ -23,7 +23,7 @@ api:
     SEND_FROM_EMAIL: island@island.is
     SERVICE_DOCUMENTS_BASEPATH: http://web-services-documents.services-documents.svc.cluster.local
     SERVICE_USER_PROFILE_URL: http://web-service-portal-api.service-portal.svc.cluster.local
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
     TELL_US_A_STORY_EMAIL: sogur@island.is
     TEMPORARY_VOTER_REGISTRY_BASE_API_URL: >-
       http://web-temporary-voter-registry-api.temporary-voter-registry.svc.cluster.local
@@ -159,7 +159,7 @@ application-system-api:
     REDIS_URL_NODE_01: >-
       clustercfg.general-redis-cluster-group.whakos.euw1.cache.amazonaws.com:6379
     SERVICE_DOCUMENTS_BASEPATH: http://web-services-documents.services-documents.svc.cluster.local
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
     XROAD_BASE_PATH: http://securityserver.island.is
     XROAD_BASE_PATH_WITH_ENV: http://securityserver.island.is/r1/IS
     XROAD_CLIENT_ID: IS/GOV/5501692829/island-is-client
@@ -191,7 +191,7 @@ application-system-api:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: application_system_api
       DB_USER: application_system_api
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/application-system/api/DB_PASSWORD
   namespace: application-system
@@ -262,7 +262,7 @@ application-system-form:
   env:
     BASEPATH: /umsoknir
     SI_PUBLIC_IDENTITY_SERVER_ISSUER_URL: https://innskra.island.is
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
     - islandis
@@ -302,7 +302,7 @@ application-system-form:
 contentful-translation-extension:
   enabled: true
   env:
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
   grantNamespacesEnabled: true
@@ -339,7 +339,7 @@ contentful-translation-extension:
 download-service:
   enabled: true
   env:
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - islandis
     - nginx-ingress-external
@@ -383,7 +383,7 @@ endorsement-system-api:
     DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
     DB_NAME: services_endorsements_api
     DB_USER: services_endorsements_api
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
     TEMPORARY_VOTER_REGISTRY_API_URL: >-
       http://web-temporary-voter-registry-api.temporary-voter-registry.svc.cluster.local
   grantNamespaces:
@@ -413,7 +413,7 @@ endorsement-system-api:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: services_endorsements_api
       DB_USER: services_endorsements_api
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/services-endorsements-api/DB_PASSWORD
   namespace: endorsement-system
@@ -450,7 +450,7 @@ icelandic-names-registry-backend:
     DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
     DB_NAME: icelandic_names_registry_backend
     DB_USER: icelandic_names_registry_backend
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - islandis
   grantNamespacesEnabled: true
@@ -484,7 +484,7 @@ icelandic-names-registry-backend:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: icelandic_names_registry_backend
       DB_USER: icelandic_names_registry_backend
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/icelandic-names-registry-backend/DB_PASSWORD
   namespace: icelandic-names-registry
@@ -502,7 +502,7 @@ icelandic-names-registry-backend:
 island-ui-storybook:
   enabled: true
   env:
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
   grantNamespacesEnabled: true
@@ -541,7 +541,7 @@ party-letter-registry-api:
     DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
     DB_NAME: services_party_letter_registry_api
     DB_USER: services_party_letter_registry_api
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - islandis
     - application-system
@@ -570,7 +570,7 @@ party-letter-registry-api:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: services_party_letter_registry_api
       DB_USER: services_party_letter_registry_api
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/services-party-letter-registry-api/DB_PASSWORD
   namespace: party-letter-registry
@@ -594,7 +594,7 @@ search-indexer-service:
     ELASTIC_INDEX: island-is
     ELASTIC_NODE: https://vpc-search-mw4w5c2m2g5edjrtvwbpzhkw24.eu-west-1.es.amazonaws.com
     NODE_OPTIONS: '--max-old-space-size=976'
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces: []
   grantNamespacesEnabled: false
   healthCheck:
@@ -664,7 +664,7 @@ search-indexer-service:
       ELASTIC_INDEX: island-is
       ELASTIC_NODE: https://vpc-search-mw4w5c2m2g5edjrtvwbpzhkw24.eu-west-1.es.amazonaws.com
       S3_BUCKET: prod-es-custom-packages
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       CONTENTFUL_ACCESS_TOKEN: /k8s/search-indexer/CONTENTFUL_ACCESS_TOKEN
   namespace: search-indexer
@@ -698,7 +698,7 @@ service-portal:
   env:
     BASEPATH: /minarsidur
     SI_PUBLIC_IDENTITY_SERVER_ISSUER_URL: https://innskra.island.is
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
     - islandis
@@ -745,7 +745,7 @@ service-portal-api:
     EMAIL_REGION: eu-west-1
     NODE_OPTIONS: '--max-old-space-size=464'
     SERVICE_PORTAL_BASE_URL: https://island.is/minarsidur
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
     - islandis
@@ -772,7 +772,7 @@ service-portal-api:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: service_portal_api
       DB_USER: service_portal_api
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/service-portal/api/DB_PASSWORD
   namespace: service-portal
@@ -814,7 +814,7 @@ services-documents:
     DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
     DB_NAME: services_documents
     DB_USER: services_documents
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - islandis
     - application-system
@@ -841,7 +841,7 @@ services-documents:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: services_documents
       DB_USER: services_documents
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/services-documents/DB_PASSWORD
   namespace: services-documents
@@ -859,7 +859,7 @@ skilavottord-web:
   enabled: true
   env:
     API_URL: http://web-skilavottord-ws
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
   grantNamespacesEnabled: true
@@ -904,7 +904,7 @@ skilavottord-ws:
     DB_USER: skilavottord
     SAML_ENTRY_POINT: https://innskraning.island.is/?id=sv_citizen.prod&qaa=4
     SAML_ENTRY_POINT2: https://innskraning.island.is/?id=sv_company.prod&qaa=4
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - nginx-ingress-external
   grantNamespacesEnabled: true
@@ -941,7 +941,7 @@ skilavottord-ws:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: skilavottord
       DB_USER: skilavottord
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/skilavottord/DB_PASSWORD
   namespace: skilavottord
@@ -973,7 +973,7 @@ temporary-voter-registry-api:
     DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
     DB_NAME: services_temporary_voter_registry_api
     DB_USER: services_temporary_voter_registry_api
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces:
     - islandis
   grantNamespacesEnabled: true
@@ -1001,7 +1001,7 @@ temporary-voter-registry-api:
       DB_HOST: prod-vidspyrna-aurora.cluster-cneim47t7wpr.eu-west-1.rds.amazonaws.com
       DB_NAME: services_temporary_voter_registry_api
       DB_USER: services_temporary_voter_registry_api
-      SSF_ON: ''
+      SERVERSIDE_FEATURES_ON: ''
     secrets:
       DB_PASS: /k8s/services-temporary-voter-registry-api/DB_PASSWORD
   namespace: temporary-voter-registry
@@ -1024,7 +1024,7 @@ web:
     DISABLE_REGULATIONS_PAGE: 'false'
     DISABLE_SYSLUMENN_PAGE: 'false'
     NODE_OPTIONS: '--max-old-space-size=464'
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
     TRACKING_DOMAIN: island.is
   grantNamespaces:
     - nginx-ingress-external
@@ -1081,7 +1081,7 @@ xroad-collector:
   env:
     ELASTIC_NODE: https://vpc-search-mw4w5c2m2g5edjrtvwbpzhkw24.eu-west-1.es.amazonaws.com
     NODE_TLS_REJECT_UNAUTHORIZED: '0'
-    SSF_ON: ''
+    SERVERSIDE_FEATURES_ON: ''
   grantNamespaces: []
   grantNamespacesEnabled: false
   healthCheck:
@@ -1115,4 +1115,3 @@ xroad-collector:
       eks.amazonaws.com/role-arn: arn:aws:iam::251502586493:role/xroad-collector
     create: true
     name: xroad-collector
-
